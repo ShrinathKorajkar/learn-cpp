@@ -1,0 +1,13 @@
+output/
+*.out
+*.exe
+*.ini
+
+# Large media files
+*.mp4
+*.tiff
+*.avi
+*.flv
+*.mov
+*.wmv
+*.wav

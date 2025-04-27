@@ -1,0 +1,1163 @@
+# Why c and c++
+    1. Performance :-  allow direct memory access and system resource access. optimal for speed and real time exe
+    2. Control     :-  C and C++ provide a high degree of control over hardware resources and memory management.    
+    3. application :-  Os, device driver, game development, embedded systems, network, compilers, databases
+    4. apps        :-  Vs code, unix, linux, windows, google search engine, unreal engine, counter strike
+
+
+# Memory Structure of C++
+    1. Theory
+        a. when OS loads program ->  text segment, data segment, stack, heap, PC register, Process registers,
+                                     stack pointer (SP), base Pointer (BP), file descriptors and handles (files, I/O, sockets) 
+                                     environment variables and Cmd line args, Thread specific data, process control block
+        b. Virtual memory assigned to each process/program  ->  32-bit  =>  2^32  =>  4 GB
+                                                                64-bit  =>  2^64  =>  16 ExaBytes
+        c. Lets assume everything now wrt to 32-bit
+           kernel  =>  1 Gb (128 Tb in 64)            user space  =>  3 Gb
+        d. Kernel Space, Text Segment, GOT/PLT, IVT/Exception Table, env var  =>  not modifiable by user-level programs
+           stack, heap, thread-specific storage, and some parts of the data segment  =>  modifiable by the program
+        e. Global offset table(addr of data and func), procedure linkage table(link call with act addr), Interrupt vector table(ptr pointing to handlers)
+        f. After syntax and semantic analysis, symbol table created and memory for variables is reserved (not allocated)
+
+    2. Env variables and Cmd line Args
+        ## ENV
+        a. set of dynamic values (change based on current state of system, user preferences, or other factors).
+        b. these affect way process behave on computer
+        c. used by OS to store config settings (key-value pairs)
+        d. eg :- PATH (dir for exe)                 HOME (home dir of usr)
+                 LANG (lang of curr sys)            USER (usrName of curr logged in usr)
+        e. getenv("")  ->   stdlib.h
+           export VARIABLE_NAME=value   ->  set value
+
+        ## CMD line
+        a. values provided to pgm when invoked frm cli
+        b. passed as strings -> 0 (pgm name)
+        c. provided to pgm at beginning at launch by OS at runtime
+        d. argc, argv
+
+    3. Stack
+        a. Used by pgm during exe
+        b. store local var, function def, return type, args, return address.
+        c. fast, size - 2-8 Mb
+        d. automatic alloc, dealloc
+
+    4. Heap
+        a. used for dynamic mem alloc during runtime, not automatically alloc or dealloc
+        b. In gbs. Lead to fragmentation (internal (large alloc than req), external (scattered free mem))
+        c. mem leak  :-  non deallocated mem
+        d. obj exists beyond scope
+
+    5. Data Segment
+        a. Uninitialized / BSS (block started by symbol)
+            - global and static var which are not initialized.
+            - automatically initialized by OS to zero
+        b. Initialized
+            - initialized global and static symbols
+            - read only data seg (RODS) :-  constants, string literals (local + global)
+            - writable data seg (WDS) :-  modifiable
+        c. fixed size allocated at compile time
+
+    6. Text Segment / Code Segment
+        a. local const var, executable file
+        b. may contain symbol table, ref to shared lib, executable file format
+
+    7. Global offset Table (GOT) / Procedure Linkage Table (PLT)
+        a. dynamic linking of shared files
+        b. each shared lib has its GOT containing global var, funcs entries with addrs
+        c. point to stubs in PLT. which facilitate dynamic func calls
+        d. actual addrs of func are resolved by dynamic linker
+        e. PLT contains stubs, responsi for func calls, and resolv func addr
+
+    8. Interrupt Vector Table (IVT) / Exception Table
+        a. IVT contains addresses corresponding to interrupt service routine
+        b. Exception table contains addresses to exception handlers
+
+    9. Kernel Space  :-  reserved for OS
+
+    10. Thread Specific Storage
+        a. unique to each thread, locates seperate from global mem elems
+        b. dynamically allocated
+        c. variables with thread_local keyword are stored here
+
+
+# BASICS
+    1. Bjarne Stroustrup - 1979 (c++20 stable)
+    2. lvalue            :-  object that has an address (int i = 10) locater value
+    3. rvalue            :-  expression that dont have any address - right value
+    4. dangling pointer  :-  pointer that points to mem that is deallocated or not valid
+    5. smart pointers    :-  unique_ptr, shared_ptr, weak_ptr
+    6. storage classes   :-  auto, static, register, extern (scope, lifetime, initial value) -> variables
+    7. switch            :-  has only integeral data type(known offset) due to lookup table mechanism (other data types can have infinite possible values between 2 values)
+    8. selection statements and iteration statements
+    9. linker specify main as starting point acc to OS executable file format(_start() -> _init() -> main())
+    10. Each operating system => own executable file format
+        a. define how the code and data are organized within the file, 
+        b. how the program should be loaded into memory
+        c. where the entry point for program execution is located.
+        d. Windows - Portable executable format (PE),  Linux - executable and linkable format (ELF)
+    11. main returns exit status to OS (0 for success)
+    12. [[maybe_unused]] is used to supress warnings. can be used with functions too
+    13. namespace allow for encapsulation and avoiding naming conflicts
+    14. endl flushes the buffer, \n do not (send data to output)
+    15. << insertion operator, >> extraction operator
+    16. char argc, char **argv  =>  argv[0] - name of pgm
+    17. functions are by default extern - defined once
+    18. global var are automatically initialized
+    19. Tokens :- keywords, identifiers, literals, operator, punctuation, #, //
+    12. The number of operands that an operator takes as input is called the operator’s arity. 
+    13. variable with register keyword - stored in register not ram and cannot use bitwise operators, max size = word length(reg size)
+    14. cin = read word and leave \n in input buffer
+        getline = read line and discard the \n from input buffer
+    15. auto  :-  only using auto with variable allow compiler to automatically deduce the type
+    16. float :-  1 bit sign, 8 bits exponent, 23 bits mantissa
+    17. double :- 1 bit sign, 11 bits exponent, 52 bits mantissa
+    18. metasyntactic variables :-  foo, bar 
+    19. cstdlib  :-  0, EXIT_SUCCESS, EXIT_FAILURE - macros
+    20. DRY      :-  dont repeat yourself,   WET  :-  write everyting twice
+    21. variables are destroyed in opposite order of creation
+    22. in var[] => var is constant and v++ is invalid
+    23. reference cannot be changed to refer another object
+    24. total 128 characters in ASCII
+    25. structure padding  :-  memory optimization technique, improve access of data, word length of processor
+    26. cin.ignore(), cin.clear()  :-  clear input buffer
+    27. main function is declared in global namespace, not stored in stack
+    28. const are always init when dec, except in func param (as they are runtime constants)
+    29. constexpr :-  can be eval at compile time(c++11), consteval(c++20) strict
+        compile time const  :-  val known at compile time ("hello", 34)
+        variable not modifiable after initialization and whose initializer is known at compile-time -> declared as constexpr.
+        variable not modifiable after initialization and whose initializer is not known at compile-time -> const. (can be computed at runtime -> const a = b)
+        enums :- symbolic constants, compile time eval, can be traversed using loop, used to group, create state of obj
+    30. constant folding :-  3 + 3 replaced by 6
+    31. padding is present in normal data too and not only struct
+    32. After OS -> executable file format -> _init(.init section), _start(.text section) in assembly
+        objdump -d, readelf -h, readelf -d -> a.out
+        main cannot be overloaded as it has to be unmangled
+    33. register keyword is depricated from c++17
+    34. Type inference  :-  automatic type deduction
+    35. variable-length arrays (VLAs) to allocate memory on the stack with a size determined at runtime. (int n; int arr[n];)
+        VLAs cannot be static or global
+    36. We need to pass second arg in func taking 2D array as it calculates using : *(arr + colSize * i + j) with pointers : *(*(arr + i) + j)
+
+
+# Data and Data Types
+    1. define and initialization
+        a. int a      :-  uninitialized
+        b. int b = 2  :-  copy initialization
+        c. int c(3)   :-  direct initialization / constructor
+        d. int d = {4}:-  list copy initialization
+        e. int e{5}   :-  list direct initialization / uniform initialization   (prevent narrowing)
+        f. int f{}    :-  initialized to 0
+        g. int g = int()  :-  initialized to 0 / value initializaiton
+        g. list initialization helps prevent narrow conversion (data loss), 
+        h. keywords   :-  C++  :-  92,      C  :-  32,      Java  :-  53,     Python  :-  35
+        i. if we give char input to int var it get initialized to 0 (std::cin >> a)
+        j. list initialization includes type checking and safe
+        k. magic numbers  :-  direct numbers
+
+    2. Type modifiers
+        a. short
+        b. signed
+        c. unsigned
+        d. long
+
+    3. Primitive Data Types :- char, int, float, double, bool
+       User-Defined :- array, pointers, references, typedef, structure, classes, enum, union
+    
+    4. reference var :- should be initialized at declaration, cannot be reffered to another var, cannot be null
+       enums         :- scoped (encapsulation, naming conflicts), non-scoped(traditional), 
+                        scoped access - static_cast<>() or operator overloading
+    
+    5. string   :- dynamic size, auto mem mgmt,  concat +, functions (class in string.h), also list initializaiton
+        a. empty string when delcared, str[i] - to access
+
+        b. Constructors
+            string()                :-  Default constructor, creates an empty string.
+            string(const char*)     :-  Constructs a string from a C-style string (null-terminated character array).
+            string(const string&)   :-  Copy constructor, constructs a string by copying another string.
+            string(size_t, char)    :-  Constructs a string with a specified number of copies of a character.
+
+        c. Capacity Methods
+            size() or length()      :-  Returns the length of the string.
+            empty()                 :-  Returns true if the string is empty; otherwise, returns false.
+            max_size()              :-  Returns the maximum possible size of the string.
+
+        d. Modifiers - inplace
+            clear()                 :-  Clears the contents of the string.
+            erase()                 :-  Erases a portion of the string.
+            push_back()             :-  Appends a character to the end of the string.
+            pop_back()              :-  Removes the last character from the string.
+            append(), operator+=    :-  Appends another string or a portion of another string to the current string.
+            insert()                :-  Inserts characters into the string.
+            replace()               :-  Replaces characters in the string with another string.
+            resize()                :-  Changes the size of the string.
+
+        e. String Operations - return new string
+            c_str()                 :-  Returns a C-style null-terminated string.
+            data()                  :-  Returns a pointer to the first character of the string.
+            substr()                :-  Extracts a substring from the string.
+            find(), rfind()         :-  return index of first and last occ of string
+            find_first_of()         :-  return ind of first occ of any char in given str
+            find_last_of()          :-  return ind of last occ of any char in given str
+            find_first_not_of()     :-  return ind of first occ of any char not in given str
+            find_last_not_of()      :-  return ind of last ".
+            compare()               :-  Compares two strings. return 0 if same
+
+        f. Numeric Conversions
+            stoi(), stol(), stoll() :-  Convert string to integer, long, or long long.
+            stof(), stod(), stold() :-  Convert string to float, double, or long double.
+
+        g. Utility Functions
+            getline()               :-  Reads an entire line of text from the input stream.
+            to_string()             :-  Converts numeric types to strings.
+            toupper(), tolower()    :-  Converts characters to uppercase or lowercase.
+
+        h. Other Functions
+            strlen, strcat, strncat, strcpy, strncpy, strcmp, strncmp, strchr, strrchr, strstr
+            strtok, strsep
+
+        i. shrink_to_fit(), at(), back, front
+
+        j. Iterator
+            a. begin() and end()
+            b. rbegin() and rend()
+
+    6. function type
+        a. function pointer
+        b. function references
+
+    7. Type Qualifiers
+        a. const      :-  constant
+        b. volatile   :-  can be changed by external force. reload value from mem, each time accessed. not optimise
+        c. restrict   :-  only assigned pointer can change memory (int* restrict a). promise to compiler that mem do not overlap.
+        d. mutable    :-  can change const function also   (private:  mutable int a)
+
+    8. Special Data Types
+        a. decltype(a + b) c  :-  declare c of type returned by a + b and save the result
+        b. stingizing(#x)     :-  convert macro arguments into string literals
+                                  eg:- #define stringfy(x) #x    =>   input - 122   output -  '122'
+        c. Token Pasting(##)  :-  concatenate tokens - useful for creating new symbols
+                                  eg:- #define concat(a, b) a##b  =>  input - (foo, bar)   output - foobar
+        d. boolean            :-  true, false (default), stored as 1,0
+            a. std::boolalpha :-  to show true false. noboolalpha to reverse, also for cin>> bool values
+            b. bool b{4}      :-  not allowed
+            c. bool b = 4     :-  allowed (copy initializaiton allows implicit conv)
+        e. size_t             :-  unsigned int type, represent size of obj 8 bytes. generic data type. 
+                                  can hold largest obj that can be created on system
+        f. void               :-  generic data type, can point to any data type, dynamic data, type erasure, dynamic typed(runtime datatype)
+
+    9. Other
+        a. _t suffix means data type (fixed size regardless of platform or compiler) -> <cstdint>
+        b. string     :-  compound type (class)
+        c. void       :-  incomplete type ->  compiler dont know size, cannot be instantiated
+        d. int - 4b   :-  int is 4 B on 64 as well as on 32 because of compatibility, memory efficient, performance and alignment req
+        e. float, d   :-  standardized by IEEE bcz of arithmetic across all platforms
+        f. nullptr_t
+        g. on 32 bit machine -> int is faster than short and char - (2^(n-1)) to 2^(n-1)-1
+        h. unsigned int overflow ->  no / max + 1  and remainder is kept when overflow occur (eg 256 = 1)
+        i. thus unsigned is avoided -> overflow and mixmatch while operations
+        j. fixed len :-  int8_t, ... std::int32_t,    int_fast32_t
+        k. 2500  =>  2.5e3 or 2.5e+3
+        l. floating point are always signed - suffixed with f -> 23.32f
+        m. double has 15 precision after decimal and float has 7
+        n. cout formats to 6 precision by default -> override using cout<<std::fixed<<std::setprecision() -> iomanip
+        o. rounding error :-  make number slightly greater or smaller. this increases with inc in operations
+        p. Special category of floating point no :-  inf, -inf, nan
+        q. string literals are stored in data segment (constant), other literals are embedded directly 
+
+    10. All available
+        - int               unsigned int                long                unsigned long
+        - long long         unsigned long long          short               unsigned short
+        - char              unsigned char               wchar_t             char16_t
+        - char32_t          std::size_t                 std::ptrdiff_t      bool
+
+
+# Operators
+    1. Unary 
+    2. Binary
+    3. Ternary
+    4. Nullary  :-  sizeof()  =>  calculates size in compile time
+
+    5. precedence  :-       ::             new              delete
+        ()      []          . ->        postfix ++ --       prefix ++ --        unary + -     
+        !       ~        (typecast)       * / %             binary + -          bitwise << >>   
+        <>      == !=     bitwise &     bitwise ^           bitwise |           logical &&               
+        ||      ? :        = =+ =*       comma (,)           
+    
+    6. [] => offset Operator [i]
+
+
+# Pointers and References
+    ## POINTERS
+        1. Simple  :-  int *ptr = nullptr;
+           dynamic :-  int *ptr = new int(5);
+           1D      :-  int *ptr = new int[4];
+           2D      :-  int **ptr = new int*[4];
+           delete  :-  delete []ptr;
+        
+        2. Dynamic Memory
+            a. string should not be used with dynamic as it is already dynamic internally.
+            b. even if created a dynamic string it will be different from internal
+            c. bad_alloc exception is thrown if mem alloc failed.
+            d. std::nothrow, will not cause exception but return nullptr
+            e. void pointers can be typecasted into anything -> generic DS
+
+        3. Ownership
+            a. RAII (Resource Allocation Is Initialization) -> binds lifetime of resouce to objects lifetime
+            b. Resource are automatically managed when object goes out of scope
+            c. Eg:- Constructors and Destructors
+            d. Ownership concept in present in smart pointers to avoid dangling pointers, double deletion, memory leaks
+            e. RAII -> smart pointers, custom classes, stl containers, function scope, mutex
+
+        6. smart pointers - <memory> header
+            a. unique_ptr  :-  exclusive ownership, cannot be copied, transfer ownership
+                - std::move(ptr) :-  ownership is transferred using 
+                - ptr.reset()    :-  deallocate memory
+                - ptr.release()  :-  release ownership withour deleting it
+                - ptr.get()      :-  return raw pointer to managed
+                - std::make_unique<>() :- unique ptr
+                    -- make_unique<T> () -> empty pointer
+                    -- make_unique<T> (ptr) -> create uniq ptr with raw ptr
+                    -- make_unique<T> (ptr, deleter) -> custom deleter
+                - ptr.swap(b)    :-  swap contents
+                - get_deleter()  :-  return deleter
+                
+            b. shared_ptr  :-  shared ownership
+                - enable std::shared_ptr instances to share ownership of same object
+                - object is automatically deleted when last std::shared_ptr is destroyed
+                - copy const -> shared_ptr<T> (other)  :-  share ownership with other
+                - ptr.reset()
+                - ptr.use_count() :-  return current reference count (shared ptr count)
+                - ptr.unique()    :-  check is solo owner
+                - ptr.get_deleter()
+                - ptr.swap(b)
+                
+            c. weak_ptr    :-  avoid circular references and mem leak
+                - weak ref to shared_ptr
+                - used when only observing the object state is required and not changing it.
+                - constructors as above
+                - std::week_ptr<T> (shared_ptr)
+                - copy const
+                - ptr.lock()  :-  convt into std::shared_ptr or empty std::shared_ptr if deallocated
+                - ptr.expired() :-  if object reference is deallocated
+                - avoid circular reference -> if both parent and child referring to each other using shared_ptr
+                  if parent goes out of scope, the child still refer to parent, but in weak ptr it will not
+
+            e. using new takes 2 steps creating and assigning, using make will take 1 step, memory leak (deallocation of mem is not done)
+        
+        7. *p++   // same as *(p++)
+            *++p   // same as *(++p)
+            ++*p   // same as ++(*p) 
+            (*p)++ // dereference pointer, and post-increment the value it points to 
+        
+        8.        int *       p1 = &x;  // non-const pointer to non-const int
+            const int *       p2 = &x;  // non-const pointer to const int
+                  int * const p3 = &x;  // const pointer to non-const int
+            const int * const p4 = &x;  // const pointer to const int
+
+        9. Theory
+            a. pointers can change reference but arrays are constant -> 8 bytes
+            b. **ptr is passed in function for dynamic allocation as at beginning it will be pointing to null
+            c. indirect memory access, can be null
+            d. direct mem access, dynamic mem, hardware access
+            e. pass by pointer is also pass by value, copy of pointer and is created thats why we use ** with nullptr
+            f. Pointer Modification via Function -> ** or *&
+            g. Tail Call Optimization by compiler -> using same stack frame for every recursive call than using diff
+            h. even void * is of 8 bytes
+            i. We can subtract pointers but cannot add (ptr1(108) - ptr2(100) of int will give 2). i.e no of elements of that type we can store
+            k. we can use relational operations on two pointers as well. 
+
+    ## REFERENCES
+        1. Theory
+            a. It is an alias or alternative name for existing variable
+            b. access same location using different name, automatically dereference
+            c. No new memory allocation, readability and safety
+            d. must be initialized when declared, are constant and cannot be reassigned
+            e. they bind lvalue references by default and cannot be NULL
+            f. used when alias, function passing, avoid explicit dereference
+            pointers to dynamic mem, complex data manip
+            g. const reference helps in avoid copy operation on large objects
+            h. dangling reference  :-  reference to destroyed object
+            i. Overloading precedence :- lvalue -> const -> rvalue
+        
+        2. const int &ref = 10  =>  const reference can bind rvalue references. It increase the lifetime
+           int &&rref = 10      =>  Rvalue reference can hold temporary objects for move semantics and transfer ownership (stored in register)
+
+        3. Reference Collapse
+            a. lvalue-lvalue  :-  T & &    => T &
+            b. lvalue-Rvalue  :-  T & &&   => T &
+            c. Rvalue-Rvalue  :-  T && &&  => T &&
+            d. when passed to function(T &), call(&) => &
+
+        4. Reference Wrappers
+            a. act like reference but are objects that can be passed to fun expecting obj
+            b. std::reference_wrapper  :-  <functional> header
+                int x = 42;
+                std::vector<std::reference_wrapper<int>> refVec;
+                refVec.push_back(x);
+            c. std::ref                :-  <functional> header, creates std::reference_wrapper object
+                int x = 42;
+                int &ref = std::ref(x);
+        
+        5. Move Semantics
+            a. allow efficient transfer of resources from one object to another w/o copying
+            b. move constructor, move operator, std::move()
+            c. std::move() convert lvalue to rvalue for transfering ownership
+        
+        6. Perfect Forwarding
+            a. forwarding the reference to another function by preserving the type and value
+
+
+# Functions
+    a. we can ommit the parameter name if no use (int /*any name*/)
+    b. lifetime is runtime property and scope is compiler time property of var
+    c. organize, extend, reuse, test, abstraction
+    d. diff definition and prototype gives linking error compile fine
+    e. array get decayed to pointer to first memory in function
+
+
+# TIME
+    time_t  :-  time since Jan 1, 1970
+    clock_t :-  processor time
+
+    funcitions :
+        a. time()     :-  current time as time_t value
+        b. difftime() :-  diff btwn 2 time_t values in sec
+        c. mktime()   :-  convert tm to time_t value
+        d. ctime()    :-  convert time_t to string (Day Mon dd hh:mm:ss yyyy)
+        e. localtime():-  local time zone fron time_t
+        f. gmtime()   :-  convert time_t to universal time zone
+        g. strftime() :-  format time represented in tm to specified format
+        h. strptime() :-  convert string to tm representation
+        i. clock()    :-  return processor time in clock_t value
+        j. sleep()    :-  suspend execution
+        k. nanosleep  :-  sleep for nanosec
+        l. CLOCKS_PER_SEC :-  const for representing no of clock ticks
+
+
+# Multiple files
+    1. sources.txt
+        main.cpp
+        functions.cpp
+    
+    2. #!/bin/bash -> compile.sh
+        # Read the source file names from sources.txt and store them in an array
+        mapfile -t sources < sources.txt
+        # Compile the program using g++
+        g++ "${sources[@]}" -o my_program
+
+    3. chmod +x compile.sh
+        ./compile.sh
+
+    4. #include "file.cpp"    or   #include "file.h"
+
+
+# Namespace and Headerfiles
+    1. naming collision occurs at linking  =>   using header guards, no func and variable declarations
+    2. global scope -> global namespace
+    3. using myInt = int;
+    4. Object-like macros, function like macros
+    5. Using directives are not preprocessor directives
+    6. header files  :-  .h, .hpp, no-extension
+    7. #pragma once  :-  used as header guard to include it only once
+        alternative  :-  #ifndef HEADER_H  
+                         #define HEADER_H  
+                                ... content ...
+                         #endif
+
+    8. Headerfiles
+        a. declare func, classes, enums, constants  ->  .h or .hpp or no-extension
+        b. #include "header.h"
+        c. g++ -o bin/*.o *.cpp
+        d. g++ main.cpp my_header.cpp -o my_program && ./my_program
+        e. or   g++ -c file1.cpp -o file1.o
+                g++ -c file2.cpp -o file2.o
+                g++ file1.o file2.o -o my_program
+                ./my_program
+    
+    9. In C++98 and later versions, all standard C++ library components are defined in the std namespace. 
+       So, including iostream.h would bring all the symbols into the global namespace, which can lead to naming conflicts. 
+       By using iostream and adding using namespace std; or explicitly using std::cout and std::cin, we ensure 
+       that the symbols are only available within the std namespace, reducing the chances of naming conflicts.
+    
+    10. header name and file name should be same, no variable and func def, do not include .cpp
+        "" to check current dire, <> to check global 
+        g++ -o main -I/source/includes main.cpp
+
+    11. header guards  :-  macro mechanism, for prevent multiple inclusion of file
+        conditional compilation directive  :-  #ifdef
+    
+    12. HeaderFiles    :-  contain func declarations, type definitions, macro. structure info
+                           header files are interfaces, .h, .hpp -> include dir
+        library files  :-  contain compiled code of func, var, classes defined in headerfiles. actual info
+                           library files are actual implementations, ->   lib, bin dir
+                           static lib :- .a(unix), .lib(wind)           shared lib :- .so(unix), .dll(wind)  
+
+
+# OTHERS
+    1. cstdint  :-  int32_t, uint64_t
+    2. NULL     :-  #define NULL 0 -> macro
+    3. nullptr  :-  keyword
+    4. character encoding standards 
+        a. ASCII (American Standard Code for Information Interchange)  :-  7 bits (128 characters)
+        b. UTF (Unicode Transformation Format)   :-   8, 16, 32 bits (inc all languages)
+        c. UTF-8 widely used - internet, modern software systems.
+    5. __attribute__((packed))  :-  to control padding, use before variable name
+    6. #pragma pack(push, 1)    :-  use above the file to control padding OR just pack(1)
+    7. int getValue() const;
+    8. integer const, float, bool, char, enum constants, 
+    9. constexpr  :-  compile time constant, also enums => can be used to declare array
+    10. for loop  :-  more control, breakConditionKnown
+    11. \f (new line or vertical tab), \r (moves cursor to beginning of line)
+    12. short circuit :- left false all false in &&
+    13. a = (b=3, b+2);     // rightmost value
+    14. std::cin >> std::ws; // Skip leading whitespaces
+    15. inline functions  :-  inserted in code -> no stack overhead (inline variables are also there)
+    16. template <class T, class U>    =>     bool are_equal (T a, U b)
+    17. namespace new_name = current_name;   =>   namespace aliasing
+    18. static variables are initialized
+    19. getch, getchar  :-  non standard func, portability and buffering issue
+    20. cin.get()  :-  to read one char      cin.ignore()  :-  to ignore next char
+    21. cin.fail() :-  if input failed       
+    22. cin.ignore(numeric_limits<streamsize>::max(), '\n') :- read till \n
+    23. cout << "Unicode smiley: \u263A" << endl;
+    24. freopen("output.txt", "w", stdout);
+        cout << "This will be written to output.txt" << endl;
+    25. ASCII -> 0-31 unprintable chars
+    26. wchar_t -> depricated` characters, unicode compatable - cha32,16
+    27. getline() is func in string header and cin.getline() is member function in stream class
+    28. cin by default remove leading spaces
+    29. auto variable must be initialized at delcaration
+    30. loader -> startup code, CRT (c runtime) crt0.o, c++ -> crtbegin.o, crtend.o
+    31. default parameters are only specified in declaration and not in definition
+    32. implicit inline -> member functions, constexpr and eval, templates
+
+
+# PRAGMA directive
+    1. compiler-specific, compiler behavior. non standard
+    2. once      :-  prevent multiple inclusion of files
+    3. pack      :-  control structure or class alignment
+    4. message   :-  custom compiler message during compilation
+    5. warning   :-  control compile warning settings
+    6. error     :-  force to generate error
+    7. omp       :-  parallel programming
+    8. intrinsic :-  functions to treat as intrinsic
+    9. optimize  :-   control optimization settings
+    10. region/endregion :-  code folding
+    11. startup/exit     :-  functions to be called at start or exit
+    12. Macros   :-  conditional compilation, feature flags, debug modes, const with computed values
+                     type safety, global scope
+        Const    :-  type safety, local const, non-integeral constants, can be runtime
+        constexpr:-  compile time computations, type safety
+        enum     :-  set (state, options, category), symbolic constants
+
+
+# ERROR HANDLING
+    1. Return codes
+        a. syntax error  :-  {},:;
+        b. logical error :-  wrong logic
+        c. segmentation fault (code dumped)
+            1. Null Pointer deference
+            2. Array bounds violation
+            3. Reference and Pointer invalid access (dangling pointer)
+            4. Stack Overflow
+            5. Invalid Memory mapping (not accessed to process)
+            6. virtual keyword
+        d. memory leak  :-  dynamic memory not freed -> excess memory consumption
+        e. division by zero  :-  floating point exception (core dumped)
+        f. type conversion
+        g. func and var signature and name mismatch :- undefined reference
+
+    2. Exceptions
+        a. try 
+        b. catch
+        c. throw
+        d. Custom Exception
+            class MyException : public std::exception {
+            public:
+                const char* what() const noexcept override {
+                    return "My custom exception occurred";
+                }
+            };
+            try {
+                throw MyException();
+            }
+        e. std::exception  =>  provide interfaces of <exception> header
+        f. It has virtual member function what() which return string describing exception
+        g. std::bad_alloc,      runtime_error,      logical_error,      out_of_range,       invalid_argument,   
+            domain_error        length_error,       overflow_error,     underflow_error,    exception
+        h. we can rethrow the excepition in catch using throw
+
+    3. Asserts
+        a. assert is macro => cassert
+        b. catch logical errors and bugs
+        c. assertion failure leads to error message => call abort() func
+        d. to disable asserts at runtime :-  #define NDEBUG
+                                             #include <cassert>
+
+    4. Error Logging
+        a. clog  :-  not buffered (immediate display), cout is buffered
+        b. cerr  :-  not buffered, less critical
+        c. custom functions
+        d. ofstream logfile
+
+    5. error     :-  logical or runtime issue, lead to prgm crash or unexp behavior, system level, nonrecoverable
+       exception :-  runtime, interrupts normal flow of pgm, in c++ it is an object, application level
+       warning   :-  potential issue, questionable code construct, do not halt the execution
+    
+    6. Exception Safety Levels
+        a. No-Throw gurantee  :-  gurantee that func will never throw exceptions
+        b. Strong Exception Safety  :-  Even if exception occurs nothing will happen
+        c. Basic Exception Safety   :-  Func ensure no resouce is leaked
+
+
+# Dynamic Memory Allocation
+    1. new, delete  =>  operators
+    2. int *ptr = new (nothrow) int;   // assign nullptr if bad_alloc excepition  
+    3. dangling ptr =>  deleted ptr
+    4. wild ptr     =>  invalid memory pointing
+    5. accessing value using ptr =>  indirection
+    6. extensible languages :- Languages that can produce/generate new data types, as they have the ability to handle new data types.
+    7. There are five sequences of statements =>  Preprocessor directives, Comments, Declarations, Functions, Executable statements.
+    8. disad of static mem :- limit size, fixed lifetime, static alloc, thread spec mem is challenging to alloc, fragmentation
+
+
+# Program Guidelines
+    1. define goal ->  define requirements ->  define tools, target, backup plan ->  
+       large problems to small problems breakdown ->  figure sequence
+    2. Outline main func ->  implement each func ->  testing
+    3. Maintainablily over performance
+
+
+# Compilation Process
+    1. Preprocessor  :-  g++  -E  sourceCode.cpp   preprocessed.i
+    2. Compiler      :-  g++  -S  preprocessed.i   assemblyCode.s
+    3. Assembler     :-  g++  -c  assemblyCode.s   objectFile.o
+    4. Linker        :-  g++  -o  executableFile   objectFile.o
+
+    5. Optimization Techniques
+        a. constant folding and propagation  :-  evaluate exp at compile time
+        b. loop unrolling                    :-  reaplicate loop body
+        c. loop fission and fusion
+        d. dead code elimination             :-  remove code that has no effect on output, unused var
+        e. function inlining                 
+        f. common subexpression elimination  :-  eliminate reduntant calculation, reuse already calculated res
+        g. code reordering                   :-  reorder inst to improve pipeline, parallelization
+        h. memory alignment
+        i. tail call optimization            :-  optimize recursive call
+
+    6. Makefiles and buildSystems
+        a. automate process of building and compiling code
+        b. script  :-  targets, dependencies, rules
+        c. create a makefile ->  run in terminal ->  make, ./my_program, make clean
+
+    7. Preprocessor
+        a. macro expansion (#define)
+        b. file inclusion (#include)
+        c. conditional compilation (#ifdef)
+        d. pragma directives (#pragma)
+        e. stingization (# -> stingizing operator)
+        g. token pasting (## -> concat)
+        h. code organization  :-  remove comments, spaces solve other directives
+        i. g++ -E source.cpp -o preprocessed.i
+    
+    8. Compilation
+        a. lexical analysis  
+            1. use deterministic finite automata (recognize pattern using regex -> lexeme)
+            2. tokenization of keywords, operators, identifiers, seperators, literals (meaningful units)
+            3. for error detection, efficiency, code optimization
+        b. syntax analysis
+            1. check grammer rules of language and construct syntax or abstract syntax tree
+            2. hierarchical representation of code - LL parsing (top down), LR parsing (bottom up) - Left-to-right, leftmost derivation
+            3. use context free grammar -> errors
+            4. easy for understand and manipulate code, program structure and relationship, error detection
+            5. generate symbol table
+        c. semantic analysis
+            1. logical and meaningful error -> type checking (promotion), flow check, label check
+            2. scope and lifetime, declarations, function signature and overloading
+            3. array pointers, memory
+            4. uses symbol table for type checking, identifier and scope resolution
+        d. intermediate code generation
+            1. translating the source code into an intermediate representation that is easier to analyze, optimize, and transform 
+            2. direct generation is challenging due to diff archi inst set, addressing mode, memory layout
+            3. three address code etc provide abstraction from target infrastructure (machine independent)
+            4. construction of CFG(control flow graph)
+        e. code optimization
+            1. goal -> produce code that runs faster, use few resources, take less memory
+            2. loop optimization : minimize loop overhead by loop unrolling
+            3. register allocation : efficiently assign register to variables
+            4. reduce jumps and branch prediction, redundant calculations
+            5. remove dead code : has no effect,      constant folding : compile time evaluation of constants
+            6. use CFG
+        f. target code generation
+            1. assebly code which can be directly executed by target machine
+            2. parallelism is increased, stack mgmt
+            3. using instruction set 
+
+    9. Assembler
+        a. lexical analysis, syntax analysis, address resolution based on symbol table
+        b. opcode generation (machine code) using instruction set specific to target
+        c. relocation for linker, generate object file, each source -> object file
+    
+    10. Linker
+        a. links object file and library files together -> executable code
+        b. resolves external references, organize memory layout (code segement, stack, heap)
+        c. libraries are precompiled code
+        d. create references to shared libraries for dynamic linking
+        e. update references with addresses and create single executable file
+        f. static files are directly injected into executable file (fast) but not shared (less mem)
+
+    11. loader
+        a. loads file from sec mem to RAM
+        b. allocate memory for program, resolves address dependent on sec mem to primary mem
+        c. establish link between symbols/ variables and memory address via page table
+        d. provide virtual memory, dynamic linking and setup starting point in PC
+
+    12. source = 300 bytes      file.i = 700 bytes      file.s = 2.3 kb
+        file.o = 2.8 kb         execute = 16 kb         1kb => 200kb
+        GCC -> collection of preprocessor, linker, compiler, assembler
+
+    13. Symbol Table and OPTable
+        a. Symbol Table
+            - generated after sytax analysis
+            - names of all identifiers(var, func, class, labels)
+            - attributes for each identifier (data type, scope, storage class, memory location)
+            - function signatures (param, ret type, linkage)
+            - memory address or offset from label
+            - used in semantic analysis, code generation
+        b. Opcode table
+            - mnemonic instruction with corresponding binary machine code representation
+            - used in assembly translation
+        
+
+# Memory Map
+    a. Code/Text Segment            :-  read only, program is stored
+    b. Block Starting Symbol (BSS)  :-  uninitialized data segment, uninitialized global and static data ($var in unix). initialized to 0
+    c. initialized Data Segment     :-  initialized data segment, initialized global and static data
+    d. heap                         :-  dynamic memory allocated elements, slower access
+    e. stack                        :-  function frame(activation record/stack frame) -> local variables, return address etc 
+    f. stack - 1 mb windows - 8 mb unix           heap - gbs
+    g. segmentation fault  -  stack overflow :-  compile time, fast memory
+
+
+# Type casting
+    1. static  :-  static_cast<T> ()
+    2. dynamic :-  dynamic_cast<T> ()
+    3. const   :-  const_cast<T> ()        ->  used to remove const, volatile qualifiers
+    4. other   :-  reinterpret_cast<T> ()  ->  used to cast between non related types
+
+
+# Linking
+    1. Theory
+        a. Library :- precompiled binary file containing implementation details
+        b. Precompiled because :-  no need to recompile, secure as in binary cannot be modified
+        c. Linking is combining multi object, lib, other resources to create single executable
+        d. static linking use :- 
+            - portable                          - performance critical apps
+            - freeze dependencies
+        e. implicit d linking :- 
+            - Dynamic Updates                   - common functionality
+        f. explicit d linking :-  
+            - add optional features             - dynamic load balancing
+            - cross platform support            - delayed loading
+            - conditional behaviour at runtime by user input
+            - application with plugin, extension. allow to load plugin w/o compilation of main pgm
+        
+    2. Static Linking
+        a. combine all necessary files into single file at compile time
+        b. no external dependencies during runtime
+        c. complete control over library
+        d. large file size, all code and resources are duplicated in each executable
+        e. update to libraries require recompilation and slow compilation
+        f. static lib :- .a(unix),  .lib(wind)   =>  include/
+        g. g++  -o  staticExample  main.cpp  staticfile.cpp
+           ldd staticExample
+           ./staticExample
+        h. above will list shared libraries, no list -> static linking
+
+        i. User defined .a files  =>  archive command
+            - g++  -Iinclude  -c  customMath.cpp  -o   ./output/customMath.o
+              ar    rcs       lib/libMathFuncs.a  ./output/customMath.o
+              g++  -Iinclude  staticLink.cpp      -Llib    -lMathFuncs    -o  ./output/staticLink
+              ./staticLink
+            
+            - ar  :-  archive command
+              rcs :-  r -> replace or add file to archive
+                      c -> create archive if doesn't exist
+                      s -> write index (symbol table) to archive to speed up archive
+              *.o :-  precompiled files added to library
+              libmath_functions.a  :-  name of output static library archive
+              t   :-  ar -t libtest.a   =>  list all files in lib
+              x   :-  ar -x libtest.a   =>  extract all files in lib
+
+    3. Dynamic Linking
+        a. Linker uses references to lib funcs, files which are loaded at runtime
+        b. small executable size, library code is shared between multiple processes
+        c. dependent on external lib during runtime
+        d. compatibility issues with diff lib versions
+        e. shared lib :- .so(unix),     .dll(wind)      =>      bin/ or lib/
+        f. so -> shared objects,  dll -> dynamic link libraries
+        g. Shared libraries (dynamic link libraries) can be loaded at different memory addresses
+           in different processes. Position-independent code ensures that the library's code and 
+           data can be relocated without issues.
+        h. They always start with lib or l prefix
+        i. In explicit linking .h file is not required
+        j. -L =>  locate dynamic libraries at compile time
+           -Wl => locate dynamic libraries at runtime
+
+        g. Implicit Linking 
+            - necc files are linked automatically by compiler and linker -> #include files
+
+            - g++  -shared  -Iinclude  -fPIC  greet.cpp  -o lib/libgreetLib.so
+              g++  -Iinclude  implicitLink.cpp  -Llib  -lgreetLib  -o  ./output/implicitLink  -Wl,-rpath,lib 
+              ./implicitLink
+
+            - shared  :-  Specifies that you're creating a shared library.
+              fPIC    :-  Generates Position-Independent Code, which is required for shared libraries.
+              L       :-  Library Search Path (current dir)  
+              lmylib  :-  link against libmylib.so, The -l option is used to specify a library name for linking
+              Wl,     :-  This flag tells the compiler to pass the comma-separated options that follow to the linker. (Warning to linker)
+              rpath,. :-  This is the linker option being passed. It specifies the Runtime library search path (rpath) 
+                          to be embedded into the executable. The . represents the current directory.
+            - static  :-  static link use file a.out to see
+        
+        h. Explicit Linking
+            - dynamic loading, runtime linking  =>  <dlfcn.h> (dynamic linker functions)
+            - manually loading a library and resolving function references at runtime 
+            - extern "C" keyword for func, var, block
+            - g++  -shared  -fPIC  -o libmylib.so  greet.cpp         
+              g++ -o myprogram main.cpp -ldl                        
+              ./myprogram
+
+            - dlopen("filePath", flagCode)  :-  open library handler return void *, 0 for error
+            - dlsym(libHandle, "headerFuncName")   :-  return function pointer with name specified
+            - dlclose() :-  close the handle created by dlopen()
+            - dlerror() :-  return error string when error occurs
+
+            - extern "C" declare with c linkage (c compatible api) to avoid name mangling
+            - C++ name mangling :-  which is a mechanism that encodes additional information 
+                                    about a function's parameters and return type into its name.
+                                    This support - func overloading, namespace, classes, templates, operator overloading
+            - nm myprogram | c++filt or -> -C demangled names
+                                           -A show all symb inc local
+                                           -t d sort symbols and disp dynamic symb
+                                           -D external dynamic symbols
+            - help linker to find correct unmangled name
+            - without this funcName mismatch will happen -> undefined symbol error
+            - -ldl     :-  flag tells to include libdl library -> contains func for dynamic linking
+            - flagCode :-  RTLD_LAZY     =>  lazy binding, symbols are resolved when they are first used
+                           RTLD_NOW      =>  immediate biding, all symbols resolved when lib is loaded
+                           RTLD_GLOBAL   =>  symbols are made avail for other libraries
+                           RTLD_LOCAL    =>  symbols are not made avail for other (default)
+                           RTLD_NODELETE =>  prevent dynamic lib to unload after dlclose()
+                           RTLD_NOLOAD   =>  dont load lib, check if already loaded
+                           RTLD_DEEPBIND =>  symbol in dynamic lib are preferred over defined as global with same name
+
+        i. Additional Options
+            - -I<path>  :-  Add directory to search path for include files
+            - -L<path>  :-  Add dir to search path for library files
+            - -D<macro> :-  define preprocessor macro
+            - -Wall     :-  enable most warning messages
+            - -0<level> :-  Optimization level (00 for no optimization, 02 for most)
+            - -std=<std>:-  set c++ lang standard (-std=c++11)
+            - -static   :-  link against static lib instead shared lib
+            - -rdynamic :-  include all symbols for dynamic linking
+        
+        j. g++ -Iinclude -Llib -o my_program src/main.cpp -lmylib
+           -Wl,-soname,libctest.so.1
+
+    4. Some info for ldd cmd 
+            linux-vdso.so.1  :-  Virtual dynamic shared object that provides a way for the Linux kernel
+                                 to offer certain system calls and functions to user-space programs.
+            libstdc++.so.6   :-  C++ Standard Library for GCC.
+            libc.so.6        :-  C Library.
+            libm.so.6        :-  Math Library. 
+            /lib64/ld-linux-x86-64.so.2 :-  This is the dynamic linker/loader, responsible for loading shared 
+                                            libraries and executing programs.
+            libgcc_s.so.1    :-  provides support functions for the GCC compiler.
+
+            located ->  /lib/x86_64-linux-gnu/
+
+    5. Other commands 
+        a. file
+        b. nm     :-  name mangling
+                      -U  ->  undefined                             -N  ->  static func
+                      -A  ->  absolute (global or constant)         -S  ->  uninitialized static var
+                      -B  ->  BSS                                   -T  ->  text code
+                      -C  ->  common (shared global)                -W  ->  weak symbol
+                      -D  ->  data section                          -V  ->  weak obj
+                      -G  ->  global var                            -R  ->  read only data
+                      -I  ->  internal (text sec)                   -v  ->  read only data
+        c. readelf -s abc.so
+        d. g++ -c -fopt-info -o mypgm.o mypgm.cpp   :-  info about optimization
+
+
+# FILES
+    1. JSON
+        a. Objects: Enclosed in curly braces {}, an object is an unordered collection of key-value pairs. 
+           Each key is a string, and values can be strings, numbers, booleans, objects, arrays, or null.
+        b. Arrays: Enclosed in square brackets [], an array is an ordered list of values. 
+           The values can be strings, numbers, booleans, objects, arrays, or null.
+        c. A key is a string enclosed in double quotes, followed by a colon :, and then the associated value. 
+        d. Keys within an object must be unique.
+        e. String, Number, Boolean, Null, Object, Array
+        f. {  "name"   :  "John Doe", 
+              "address":  {"street": "123 Main St",   "city": "New York" },  
+              "hobbies":  ["reading", "swimming", "coding"] 
+           }
+    
+    2. CSV
+        a. delimeters ->  ,  ;  \t
+        b. quoting    ->  ","       =>  for delimeters and special chars
+        c. escaping   ->  ""        =>  for "
+        d. all values treated as strings
+
+    3. XML
+        a. elements  ->  have start tag, content and end tag
+        b. tags      ->  define struc of table
+        c. attribute ->  specified within start tag
+        d. parent -> child -> siblings
+        e. escaping  ->  &lt;  &gt;
+
+    4. Other
+        a. Streams      =>  std::ifstream,  std::ofstream,  std::fstream   =>  <fstream>
+            - binary files  ->  req less storage, faster, custom obj, portable, secure, media data
+            - in fstream seekg and seekp are same pointers
+            - eof() is set after trying to read past eof. thus last line print twice (after read op fails)
+
+        b. mode flags
+            - std::ios::in      :-  for reading
+            - std::ios::out     :-  for writing
+            - std::ios::binary  :-  for binary files. used with above
+            - std::ios::app     :-  for appending. used with ios::out
+            - std::ios::ate     :-  for starting at end
+            - std::ios::trunc   :-  for truncating file. used with ios::out
+
+            - std::ios::beg     :-  used with seek and tell
+            - std::ios::end     
+            - std::ios::cur
+
+        c. Functions
+            - void open(const char *fileName, std::ios_base::openmode  mode);
+            - void close();
+            - bool is_open();
+            - bool good();
+            - bool fail();      :-  good and fail for read/write errors
+            - bool bad();       :-  if file doesn't exist, non recoverable errors
+            - bool eof();
+            - void clear();     :-  for clearing error flags
+            - operator >>
+            - operator <<
+            - int gcount();     :-  count of characters extracted by last unformatted input op
+            - void put()
+            - void get()
+
+            - std::streampos tellg();   :-  for obtaining get(input) Position
+            - std::streampos tellp();   :-  for obtaining put(output) Position
+
+            - std::istream&  seekg(std::streampos  pos);    :-  changing input position
+            - std::ostream&  seekp(std::streampos  pos);    :-  changing output position
+
+            - std::istream&  getline(istream& is, string& str, char delim = '\n');
+            - std::istream&  getline(char* s, streamsize n, char delim='\n');
+            - std::ostream&  write(const char  *s, std::streamsize  n);
+            - std::istream&  read(char* s, std::streamsize n);
+
+            - std::ostream&  flush();   :-  for flushing output buffer
+            - std::istream&  ignore(std::streamsize n = 1, int delim = EOF);  :-  for input buff
+
+        d. I/O manipulation
+            - std::setw
+            - std::setprecision
+            - std::setfill
+            - std::left
+            - std::right
+            - std::noskipws
+            - std::skipws
+
+        e. String as Streams
+            a. <sstream>
+            b. std::istringstream  :-  class for parsing and extracting data as stream (cin, cout)
+            c. std::ostringstream  :-  write data to string
+            d. std::stringstream   :-  both read and write
+            e. stream.str()
+
+        f. <filesystem>
+            a. manipulate files and dir on the system. namespace fs = std::filesystem
+            b. fs::exists("");
+            c. fs::rename(old, new);
+            d. fs::remove(name);
+            e. fs::create_directory(name);
+            f. fs::directory_iterator(dir);
+            g. fs::recursive_directory_iterator(dir);
+            h. fs::remove_all(dir);
+
+        h. stream files
+            1. input    - cin
+            2. output   - cout
+            3. error    - cerr, clog
+
+            4. cin >> setw(20) >> buf;
+            5. get() - do not read \n from buffer
+            6. cin   - do not read space from buffer
+            7. peek()- read charac from stream without removing it
+            8. unget() - return last char read back to stream -> putback(ch)
+            9. setf()  - set flags -> std::ios::showpos -> show "+" sign in +10
+            10. unset() - ::hex, oct, uppercase, cout.set, boolalpha, noboolalpha, 
+
+
+# ANSI escape codes
+    1. Text Formatting
+        - `\033[0m`: Reset all text attributes (normal text).
+        - `\033[1m`: Bold or increased intensity.
+        - `\033[3m`: Italic text.
+        - `\033[4m`: Underlined text.
+        - `\033[9m`: Crossed-out or strikethrough text.
+        - `\033[22m`: Normal intensity (turn off bold).
+
+    2. Text Color
+        - `\033[30m`: Black text.
+        - `\033[31m`: Red text.
+        - `\033[32m`: Green text.
+        - `\033[33m`: Yellow text.
+        - `\033[34m`: Blue text.
+        - `\033[35m`: Magenta text.
+        - `\033[36m`: Cyan text.
+        - `\033[37m`: White text.
+
+    3. Background Color
+        - `\033[40m`: Black background.
+        - `\033[41m`: Red background.
+        - `\033[42m`: Green background.
+        - `\033[43m`: Yellow background.
+        - `\033[44m`: Blue background.
+        - `\033[45m`: Magenta background.
+        - `\033[46m`: Cyan background.
+        - `\033[47m`: White background.
+
+    4. Cursor Control
+        - `\033[H` or `\033[1;1H`: Move cursor to the top-left corner (1,1).
+        - `\033[2J`: Clear the entire screen.
+        - `\033[K`: Clear from cursor position to the end of the line.
+        - `\033[A`: Move cursor up one line.
+        - `\033[B`: Move cursor down one line. 
+        - `\033[C`: Move cursor forward (right) one character.
+        - `\033[D`: Move cursor backward (left) one character.
+        - `\033[G`: Move at beginning of line.
+        - '\033[<N>A' :- Move cursor up N lines.
+
+    5. Cursor Positioning
+        - `\033[Line;ColumnH` or `\033[Line;Columnf`: Move cursor to a specific position (Line, Column).
+
+    6. Scrolling
+        - `\033[S`: Scroll the screen up (pan up).
+        - `\033[T`: Scroll the screen down (pan down).
+
+    7. Hide/Show Cursor
+        - `\033[?25l`: Hide the cursor.
+        - `\033[?25h`: Show the cursor.
+
+    8. Save/Restore Cursor Position
+        - `\033[s`: Save cursor position.
+        - `\033[u`: Restore saved cursor position.
+
+    9. Alternate Screen Buffer
+        - `\033[?1049h`: Switch to the alternate screen buffer.
+        - `\033[?1049l`: Return to the main screen buffer.
+
+
+# Extra
+    a. Constant Variable
+        - macros do not follow scoping rules
+        - macros are hard to debug
+        - constants have type safety
+        - constants can be runtime constants
+        - constants with non-const initializer are runtime constants
+        - consteval must be evaluated at compile time, constexpr may and maynot
+        - inline functions must have full definitions in same compilation unit
+    b. Switch
+        - Integeral types ->  finite set of contigous values with known offset
+        - Non Integeral   ->  may be infinite no of values between 2 case labels
+        - strings are required to compare, introduce rounding errors (precision issues)
+        - conditional operator require both statements to have same type or second type must be convertile to first
+    c. numbers  
+        - decimal =>  0-9,10-19,...
+        - octal   =>  0-7,10-17,20...0
+        - hexadec =>  0-9,A-F,10-19,1A-1F...0x
+        - decimal =>  0b
+    d. Comments
+        - Doxygen : popular documentation generator for c++
+        - start with /** for doxygen and /*! for Qt 
+        - @brief description
+        - @details description
+        - @fn, @class, @struct, @union <name>   : specify name
+        - @param <paramName> description        : function parameter
+        - @tparam <paramName> description       : template parameter
+        - @return description
+        - @deprecated                   : Mark an entity as deprecated.
+        
+        - @var                          : member variable
+        - @property
+        - @enum
+        - @extends                      : Document the parent class in a derived class.
+        - @implements                   : Document the interface implemented by a class.
+        - @ingroup                      : Specify the group of which the documented entity is a part.
+        - @code and @endcode            : Enclose code blocks.
+        - @verbatim and @endverbatim    : Enclose a verbatim block.
+        - @code{.cpp}                   : Specify the language for a code block.
+        - @section                      : Create a section in the documentation.
+        - @subsection                   : Create a subsection in the documentation.
+        - @ref                          : Create a hyperlink to a named section or page.
+        - @see                          : Provide a cross-reference link.
+        - @file                         : Document a file
+        - @cond                         : Begin a conditional block.
+        - @endcond                      : End a conditional block.
+        - @defgroup                     : Define a group.
+        - @addtogroup                   : Add entities to a group.
+        - @name                         : Specify a name for a group.
+        - @since                        : Indicate the version when an entity was introduced.
+        - \ instead @ for Qt
+
+
+/project_root
+│
+├── /src
+│   ├── /include
+│   │   ├── /module1
+│   │   │   └── module1_header.hpp
+│   │   ├── /module2
+│   │   │   └── module2_header.hpp
+│   │   └── /common
+│   │       └── common_header.hpp
+│   │
+│   ├── /module1
+│   │   ├── module1_source.cpp
+│   │   └── module1_additional_file.cpp
+│   ├── /module2
+│   │   ├── module2_source.cpp
+│   │   └── module2_additional_file.cpp
+│   └── main.cpp
+│
+├── /lib
+│   ├── /external_library1
+│   │   └── ...
+│   └── /external_library2
+│       └── ...
+│
+├── /bin
+│   └── executable_file
+│
+├── /test
+│   ├── /unit_tests
+│   │   ├── test_module1.cpp
+│   │   ├── test_module2.cpp
+│   │   └── test_common.cpp
+│   └── /integration_tests
+│       └── ...
+│
+├── /build (or /out)
+│   └── (compiled files and build artifacts)
+│
+├── CMakeLists.txt (or other build configuration files)
+│
+└── README.md (project documentation)
+

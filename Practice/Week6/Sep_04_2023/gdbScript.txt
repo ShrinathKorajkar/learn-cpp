@@ -1,0 +1,5 @@
+# my gdb script
+file ./output/gdbTest
+break 38
+break 42
+run

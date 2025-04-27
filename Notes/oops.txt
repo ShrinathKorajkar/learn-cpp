@@ -1,0 +1,688 @@
+## OOPs
+    1. new operator is type safe, no size req, failure handling, calls constructor automatically, initialize it, manually reallocate, return contigous memory
+    2. static members are not allowed to initialize directly when declared, It is done outside class (stored in data segment)
+    3. other members in heap, functions in text segment, if local object in Stack else heap
+    4. name mangling is used to restrict the access
+    5. class obj can use list initialization if all members are public (Implicit construction)
+    6. all member function inside class are inline by default 
+       (check using nm, if present in op non inline or use -fopt-info with g++ -c)
+    7. forward reference  :-  used in classes to call func w/o dec before
+    8. cpp structs can have func too, only diff is default access n inhert public, unions don't have
+    9. a public func can access private members of every obj of that class
+    10. Empty class optimization  :-  1 byte class size to make objects have diff address. 
+        struct and class have 1 byte so that objects could point to 1 byte of memory (imagine having data and pointing to that data)
+        The size of a class determines how much memory is required to store an instance of that class.
+    11. const objs cannot invoke non const func
+    12. functions can be overloaded with const keyword
+    13. macro vs inline  ->  Type checking, compile-time checks, semantics, #undef, no scope
+    14. final keyword can only be used with class and virtual functions
+    15. we can change access level by "using" keyword except private members
+    16. Interface Eg -> storage interface(upload, download) -> classes local storage, cloud storage
+    17. Imcomplete types ->  declared but not fully defined
+    18. Lazy Evaluation  ->  compiler won't validate implementation of member functions until it's necessary(obj created)
+    19. Encapsulation -> data, get, set, compute data.       Abstraction -> wheel, break, accelator
+
+
+## CLASSES AND OBJECTS
+    1. Class 
+        a. blueprint of object that defines structure and behavior of objects.
+        b. user defined data type. attributes and methods, do not have memory.
+        c. sizeof(empty class) -> 1 byte
+        d. default  :-  default constr, copy const, copy assignment op, destr, move const, move ass op, this pointer
+        e. Aggregate Class  :-  public and non-static data members, no user defined construt, no base class, no virtual func
+    
+    2. Object
+        a. instance of class. represent real world entities
+        b. occupy memory at runtime, exists at runtime
+        c. created in heap as well as stack
+        d. each obj has its own set of data members
+        e. Anonymous object - having no name and expression scope
+
+    3. Access Specifiers
+        a. public     :-  accessible from anywhere
+        b. protected  :-  accessible within class and its derived classes
+        c. private    :-  accessible only within class or friend funcs
+
+    4. Why we need OOP
+        a. complexity mgmt              b. code reusability
+        c. Modularity                   d. flexibility
+        e. Abstraction                  f. real world modelling
+
+
+## CONSTRUCTORS AND DESTRUCTORS
+    1. Constructor -> special member func, automatically called when obj is created, have same name as class, no return type
+                      used to resource alloc, not Inherited, implement RAII (res acq is init), it returns initialized object
+    2. Types  :-  default, Parameterized, copy, delegating
+    3. placement new operator   :-  explicitly call constr on pre allocated mem
+       #include <new>           :-  explicitly call destructor when using this
+    4. copy constructor         :-  used for deep copy (while using pointers and dynamic mem)
+       default copy constructor :-  makes shallow copy (only addresses are copied not values)
+    5. Delegating Constructor   :-  allow to call other const (used instead default params. as anything after default should be default)
+    6. Explicit Constructor     :-  prevent unintended implicit type conversion into Object
+    7. Conversion Operator      :-  allow to define custom type conversions for class objects. convert obj into obj of another class
+    8. Move constructor         :-  std::move() to move ownership of resource such as dynamic mem
+    9. Deleted constructor      :-  using delete keyword, prevent obj copy, conversion
+    10. Dynamic Construction    :-  allocation of obj at time of creation
+    
+    1. member initializer list, default constr do not initialize, initialize even in case of exception, const and ref var.
+    2. methods cannot be overloaded with diff return type and with default values
+    3. base constr is called first, base destruc is last
+    4. In-class member initialization, member variable are initialized in order of decl
+    5. A const member/object requires user defined default constructor as const req initialization at time of creation (when data members don't have default value)
+    6. use delete and default keyword
+    7. user defined constructor is req =>  const obj or member, initialization, dynamic data
+        user defined destructor is req =>  deallocate res, virtual destruc
+    8. Rules :-  define constr, copy const, copy assign, move constr, move assign, dest
+    9. Benefits of List initialization
+        - allow to assign const member and reference members
+        - declare and initialize at once
+        - order control (wrong order not give error)
+        - initialize in the order of declaration of private data members
+    10. obj passed in func, returned -> copy const is called
+    11. copy const with call by value  ->  recursive call to itself (pointer not used for nullptr)
+    12. cannot be virtual, initialize to 0 for obj{}
+    13. Execution ->  object memory creation, list member initializaiton, constructor call
+    14. Elision   ->  direct intialization of object without copy constructor in declaration step
+    15. Rule of 3 ->  A class which req destructor must have constr, copy constr and copy assign ope
+    16. Default values to be written in func declaration not in definition in headerfile
+
+    10. Destructor =>  automatically called when obj goes out of scope, perform cleanup, deallocate, release resource
+        - default destructor does not have body
+        - except exit() and abort() every time they will be called
+
+
+## This keyword
+    1. It is a const pointer that referes to current instance of class
+    2. used for accessing members(ovecome shadowing), method chaining (ret *this), 
+    3. char * arr; int size;  :-  invariant connection
+    4. auto keyword is deduced at compile time. -> not used in dynamic linking
+    5. template functions are also inline
+    6. this is hidden pointer passed to function
+    7. not stored in memory
+    8. friend, static functions cannot access this
+    9. It is an expression (&object) passed to function, constru
+
+
+## ENCAPSULATION AND ABSTRACTION
+    1. Encapsulation  :-  Combining or wrapping/bundle up of data and related methods into single unit.
+                          data hiding, access control, data integrity(consistent and valid). uses interface
+                          getters and setters, access specifiers
+    
+    2. Abstraction    :-  Abstracting unnecessary details and focusing on essential characteristics.
+                          Focus on what is does than how
+                          simplification, reusability, using virtal key, abs class, interface
+                          done using pure virtual functions
+                          it is providing interface (simplify things, need not know internal working)
+    
+    3. Composition    :-  Use to avoid redundant inheritance, if inheritance is not adding any new func, override etc
+                          => has-a
+                          - strong form of aggregation. lifetime of part is controled by whole
+                          - parts cannot exists without whole. whole is destroyed part is destroyed
+
+    4. Association    :-  realationship btwn 2 or more classes, -> unary, binary, N-ary
+                          =>  knows-a, uses-a, owns-a
+                          - student knows teacher. both can exists independently. Noone is owner of other
+
+    5. Aggregation    :-  weak form of association
+                          =>  has-a
+                          - University -> departments. If University closes, departments can still exists
+    
+    6. Abstraction vs Encapsulation
+        - abstraction solves design level problems  and  encapsulation solves implementation level problems
+        - abstraction hides internal implementaion       encapsulation hides data from outside world can be method or variable(internal state)
+        - abstraction reduces complexity                 encapsulation hides data for data protection
+        - encapsulation implements abstraction           
+        - getters, setters check validation, error checking, maintains consistency of obj
+
+    7. Association -> aggregation(special association) -> composition(stronger aggregation)
+        - Association: A relationship where one class is related to another class by using a member variable that holds a 
+                       reference to an object of another class. This is the most basic form of relationship. (&)
+        - Aggregation: A special type of association where one class (the whole) contains or owns another class (the part), 
+                       but the part can exist independently of the whole. Aggregation is often represented as a 
+                       "has-a" relationship.(* is req)
+        - Composition: A stronger form of aggregation where the lifetime of the part is tied to the lifetime of the whole. 
+                       In other words, the part cannot exist without the whole. Composition is often represented as a 
+                       "contains-a" relationship.(* is req)
+        - Inheritance: A relationship where one class (the subclass or derived class) inherits properties and behaviors 
+                       from another class (the superclass or base class). Inheritance allows for code reuse and the creation 
+                       of specialized classes.
+        - Dependency:  A weaker form of association where one class depends on another class, usually because it uses objects 
+                       of the other class as parameters or local variables in its methods. Dependencies are often temporary and 
+                       can change over time.
+        - Realization (or Implementation): A relationship where a class implements an interface or fulfills the requirements 
+                       of a contract defined by another class. Realization is typically used in interfaces and abstract classes.
+
+    8. Interfaces
+        - Used to define contracts, enabling abstraction and polymorphism
+        - Building maintainable and extensible code
+        - Promotes loose coupling in dependency injection
+        - What someting can do but not how
+
+
+## Structure Padding 
+    1. Padding bytes are added according to the alignment of highest size member.
+    2. each member is aligned acc to its alignment requirement
+    3. Alignment Req :-  char should start on addrr - 1, 2, 3,
+                         int  should start on addr  - 4, 8, 12, 16
+                         double should start on add - 8, 16, 32
+                         long double should start on- 16, 32, 64
+    4. Pragme pack(push, align)
+        - push saves the current alignment on stack, 
+        - align value specifies alignment compiler should use, -> custom mem layout
+        - pop restores the alignment, align should be the power of 2
+        - compiler specific ->  portability issue, 
+        - dont work with normal variables
+    5. Alignas(number)
+        - can be used with variable or type, compiler dependent (C++ standard)
+        - tells the alignment requirement of type of variable
+        - It specifies the minimum alignment requirement. 
+        - i.e   class  alignas(16)  C  =>  sizeof(C) ->  16 n above
+        - alignof()  =>  returns alignment requirements
+        - more portable
+    6. __attribute__((packed))
+        - minimize of eliminate padding
+        - __attribute__((packed, aligned(4)))
+    7. -fpack-struct[=n],    var : align(bits) 
+        - This option sets the default alignment for structures.
+
+
+## INHERITANCE
+    1. Benefits :-  code reusability, hierarchy, polymorphism, Is-A relationship
+    2. Access   :-  public    ->  public remain public, prot remain protected, private no inherited
+                    protected ->  public and protected become protected
+                    private   ->  public and protected become private
+    
+    3. Single Inheritance
+        a. derived class inherit from only one base class
+        b. Object Slicing :-  loss of data members and beh, when derived class obj is assigned to base class obj
+    
+    4. Multiple Inheritance
+        a. single class inherit from multiple base classes
+        b. diamond problem
+        c. virtual inheritance
+
+    5. Multilevel Inheritance
+        a. chain of inheritance
+
+    6. Hirachical Inheritance
+        a. mulitple classes inherit from one base class (multiple single inheritance)
+
+    7. Relationship 
+        a. Compiler maintains virtual function table, for classes with virtual functions
+        b. for non virtual functions classes, direct code inclusion is done for relationship
+        c. derived class has its own vtable, inc pointers to overriden virtual func with pointers to base class virtual func
+        d. virtual pointers of child class are updated when override
+        e. Empty base class optimization :-  inheritance of empty class donot add size to child class
+
+    8. virtual Inheritance
+        a. virtual pointer - 8 bytes
+        b. downcasting require a function to be virtual in base
+        c. overloading is hidden by overriding
+        d. we can stop inheritance using final keyword
+        e. vtables at compile time
+
+
+## STATIC 
+    1. static variables
+        a. inside function ->  initialized only once during first execution of function, retain value btwn subsequent calls
+                               - scope is within function
+                               - lifetime is entire program
+                               - stored in data segment (func()::var)
+        b. inside class    ->  class level, shared by all instances of that class. associated with class, 
+                               - has to be constant if in-class initialization
+                               - has to be defined outside class else
+                               - data segment, class scope, lifetime is program
+        c. outside/global  ->  restrict scope to current translation unit, external linkage not possible
+                               - stored in data segment
+                               - lifetime is program
+        d. order of initialization is not guaranteed, if one is dependent on other, it can cause problems
+
+    2. static functions
+        a. inside class    ->  belongs to class, can be invoked without object, cannot access non-static members, do not have this
+        b. global function ->  restrict scope to current translation, can access all members
+        c. linker ensures only one instance of static member
+        d. initialized before main is called
+        e. static cannot be overloaded, virtual, can be inherited(not override but diff func)
+        f. can be initialized in class -> inline, constexpr, const keyword
+        g. not subjected to access specifier
+
+
+## FRIEND
+    # Friend Functions
+        1. allow to access private and protected members of class
+        2. friend void friend(Obj &obj);
+        3. declaration inside class, defined outside
+        4. not inherited, no this pointer, no static
+        5. used for operator overloading -> access private, symmetry(b+a = a+b)
+        6. operator overloading require param const
+        7. cannot access other friend funcs, can access static mem and func
+    
+    # Friend Member Functions
+        1. member function of one class as friend of another class. this allow to access the members of that class
+    
+    # Friend Class
+        1. access private and protected members of another class.
+        2. friend classes can inherit the friendship of base class
+
+
+## POLYMORPHISM
+    1. It means multiple forms - ability of different classes to be treated as instances of a common 
+      - base class through a shared interface.
+      - dynamic binding can only be done using & and *
+      - Open/Closed Principle - Open for extension and closed for modification
+      - Binding  ->  converting identifiers into address
+      - most derived class is responsible for constructing virtual class
+
+    2. STATIC POLYMORPHISM
+        a. Also called early binding, compile time, 
+        b. appropriate func, operation to be executed is determined in compile time
+        c. function overloading
+            - no, type, order of args passed.
+            - return type does not affect
+            - best match ->  exact, promotion
+            - same function can be overloaded in derived class with same param
+            - overloading func in derived class will hide all functions from base class
+        d. operator overloading
+            - can be overloaded with only user-defined types no built-in types
+            - Types - member func, non-member func(global)
+            - for non-member parameters should be public, atleast one param should be userdefined
+            - operators we cannot overload               ->   ::  .  ?:  sizeof  .*  &
+            - operators must be overloaded inside class  ->   ->  =  ()[]  A()
+            - if we want to overload operators globally  ->   use friend functions
+            - operators must be overloaded outside class ->   <<  >>
+            - if operator modify param, use member func
+            - [] ->  subscript operator
+            - if want symmetry (1 + a, a + 1) use non-mem
+            - return reference of left object in         ->   =  pre++--  []()  ->*  <<
+
+    3. DYNAMIC POLYMORPHISM
+        a. Overriding
+            - same method name, same param, same return type
+            - public method can be overriden to make private but not vice versa
+            - override keyword can only be used with virtual
+            - for making polymorphic class there must be atleast one virtual function (vtable dynamic link)
+            - dynamic dispatch, late binding ->  determining appr fun to be called at runtime
+            - we cannot use static, friend
+            - A friend function cannot be declared as virtual. However, it's possible 
+              for a virtual function to be declared as a friend function.
+            - virtual assignment operator
+            - :: can be used to call without calling virtual
+            - A base class destructor should be either public and virtual, or protected and nonvirtual.
+
+        b. Virtual Functions
+            - mechanism for function to be resolved at runtime
+            - we need override keyword only for compile time typos
+            - must have same return type and parameters. without virtual there can be diff
+            - virtual table     
+                ->  gets created for every class having atleast one virtual func
+                ->  function pointers of virtual functions in order of declaration
+                ->  stored in read only data segment
+                ->  function pointers point to actual func implementation resolved at compile time
+                ->  seperate vtables for seperate classes
+            - virtual pointer   
+                ->  points to vtable of object (8 bytes)
+                ->  specific to object (sep obj have sep actual type)
+                ->  inherited from base class. derived vptr also points to same virtual function
+                ->  first member of the object in memory
+                ->  not a reference or normal var as they would req mem to vtable, no reference as ref are constant
+            - covariant return type  :-  return class types in virtual functions. base for base and derived for der
+              object Slicing         :-  assigning child object to base without pointer or ref
+        
+        c. Abstract class
+            - Any class that contains atleast one pure virtual function
+            - Cannot be instantiated. provide interface
+            - If child do not override virtual func it becomes abstract
+
+        d. Virtual Destructor
+            - used for proper cleanup
+            - always use virtual destructor if inheritance is present
+            - virtually inherited classes must have virtual destructor
+            - if base class has virtual destructor, all children must have
+
+        e. Virtual Base Class Table
+            - in virtual inheritance
+            - created for class that inherits virtually
+            - here virtual table is created for only one class that is inherited virtually
+
+
+## SOLID PRINCIPLES
+    # Notes
+        1. Single Responsibility Principle  ->  Classes
+        2. Open/Close Principle             ->  Inheritance and Polymorphism
+        3. Liskov's Substitution Principle  ->  Dynamic Polymorphism
+        4. Interface Segregation Principle  ->  Interface and abstract classes
+        5. Dependency Inversion Principle   ->  Abstraction and Dependency injection
+
+        - reduce the rebuild, retest and redeploy
+        - There is no model that is natural to all contexts
+
+    1. Robert C Martin - Maintainable and scalabel Object oriented code
+        - It is not wise to apply any principle for that matter, if there is no symptom.
+
+    2. Single Responsibility Principle (SRP)
+        a. A class should have only one responsibility (it should do only one thing and well)
+        b. FileManager class - reading and writing => FileReader and FileWriter class
+        c. There should never be more than one reason for it to change 
+           (if you change something, other working thing should not stop)
+        d. Classes, funcs should not be coupled(interdependent)
+        e. gather together that change for same reason, seperate that change for different reasons
+        f. There should be only one actor(user) who can change it.
+
+    3. Open/Closed Principle (OCP)
+        a. Software entities (classes, modules, functions) should be open for extension and closed for modification
+        b. Shape class with draw method => inheritence and polymorphism to add new shapes - Circle and Square
+        c. Stops when single change in program results in cascade of changes to dependent modules
+        d. If OCP applied, further changes are achieved by adding new code, not changing old code
+        e. behaviour of modules can be extended acc to changes.
+        f. no matter how “closed” a module is, there will always be some kind of change against which it is
+           not closed. designer must choose the kinds of changes against which to close his design
+
+    4. Liskov Substitute Principle (LSP)
+        a. Objects of superclass should be replacable with objects of subclass.
+        b. Bird -> Ostrich and Sparrow, we should be able to use sparrow and ostrich in place of bird without issue
+    
+    5. Interface Segregation Principle (ISP)
+        a. Small interfaces acc to clients 
+        b. scan, print => allInOnePrinter
+        c. no code should be forced to depend on methods it does not use.
+        d. ISP splits interfaces that are very large into smaller and more specific ones so that clients
+           will only have to know about the methods that are of interest to them.
+
+    6. Dependancy Inversion Principle (DIP)
+        a. high level modules should not depend on low level modules. abstraction should not depend on details
+        b. use of interface and abstraction -> flexibility
+        c. instead of creating two objects of sms and email in notification
+           create sender interface and make it implement by sms and email and create obj of sender in notification
+        d. In a loosely coupled design, classes should depend on abstractions rather than concrete implementations. 
+           loose coupling enables -> maintainance and extensibility
+
+
+## TEMPLATES
+    1. Function Templates
+        a. act as a placeholder :- template <typename T>
+        b. type deduction :- to determine actual data types.
+        c. template instantiaion :- generate actual code
+        c. explicit instantiaion => template float add<float>(float, float);
+        d. code bloating :- unnecessary, long, slow not useful
+        e. specific and generated for each translation unit. at linking deduplication happens
+        f. Non-Type are constant and cannot be modified.
+
+    2. Class Templates
+        a. generic templates
+        b. default template arguments
+        c. Non-type template arguments
+        d. different templates for member functions
+        e. static members cannot be template type. must be specific
+    
+    3. Variadic Templates
+        a. zero or more arguments => template <typename... Args>
+        b. ((std::cout << arg << " " ), ...)  =>  expansion
+        c. recursion
+    
+    4. Template Metaprogramming
+        a. technique used to perform computations at compile time.
+        b. uses specialization and recursion
+        c. type traits  :-  std::is_same, std::is_integral, std::is_floating_point
+        d. SFINAE (Substitution failure is not an error)
+            - enable, disable templates
+            - control selection of templates
+
+        e. Type Traits  =>  inspect and manipulate types at compile time   =>   <type_traits>
+            - std::is_void<T>           :-  Checks if T is a void type.
+            - std::is_integral<T>       :-  Checks if T is an integral type (e.g., int, long, char).
+            - std::is_floating_point<T> :-  Checks if T is a floating-point type (e.g., float, double).
+            - std::is_array<T>          :-  Checks if T is an array type.
+            - std::is_pointer<T>        :-  Checks if T is a pointer type.
+            - std::is_reference<T>      :-  Checks if T is a reference type.
+            - std::is_function<T>       :-  Checks if T is a function type.
+            - std::is_const<T>          :-  Checks if T is a const-qualified type.
+            - std::is_volatile<T>       :-  Checks if T is a volatile-qualified type.
+            - std::is_same<T, U>        :-  Checks if T and U are the same types.
+
+            - std::is_base_of<Base, Derived> :-  Checks if Base is a base class of Derived.
+            - std::is_convertible<T, U>      :-  Checks if T is convertible to U (i.e., if T can be implicitly converted to U).
+            - std::is_assignable<T, U>       :-  Checks if an object of type T can be assigned a value of type U.
+            - std::is_copy_assignable<T>     :-  Checks if T is copy-assignable.
+            - std::is_move_assignable<T>     :-  Checks if T is move-assignable.
+            - std::is_copy_constructible<T>  :-  Checks if T is copy-constructible.
+            - std::is_move_constructible<T>  :-  Checks if T is move-constructible.
+
+            - std::remove_const<T>           :-  Removes the const qualification from T.
+            - std::remove_volatile<T>        :-  Removes the volatile qualification from T.
+            - std::add_const<T>              :-  Adds the const qualification to T.
+            - std::add_volatile<T>           :-  Adds the volatile qualification to T.
+            - std::remove_reference<T>       :-  Removes reference from T.
+            - std::add_lvalue_reference<T>   :-  Adds an lvalue reference to T.
+            - std::add_rvalue_reference<T>   :-  Adds an rvalue reference to T.
+
+            - std::enable_if<Condition, T>      :-  Enables/disables a template specialization based on a condition.
+            - std::conditional<Condition, T, U> :-  Chooses between T and U based on a condition.
+
+        f. Type alias => using var = className<T>,
+                         typedef className<T> var;
+
+    5. Template Arguments:
+        - Type template arguments.
+        - Non-type template arguments (e.g., integers, pointers). must be constexpr
+            a. integral or enumeration type, 
+               Pointer or reference to object 
+               Pointer or reference to function, 
+               Pointer or reference to member function
+               std::nullptr_t  or  floating type (c++20)
+        - Template template arguments (template template parameters).
+
+
+## MULTITHREADING
+    1. Theory
+        a. Technique used to acheive parallelism by cuncurrency
+        b. has same memory and resources but different stack and PC
+        c. waiting and signaling using condition variable
+        d. Lock free algorithm  :-  threads can be delayed but not indefinitely blocked
+        e. Wait free algorithm  :-  no thread can be indefinitely delayed by other threads
+        f. Thread local storage :-  unique instance per thread
+        g. 4 different ways of creating thread :- funcPtr, lambda, functor, memFunc
+        h. condition_variable can work only with unique_lock, cv_any can work with all locks
+    
+    2. std::thread
+        a. <thread>
+        b. classes
+            - std::thread                   std::thread_id                      std::thread::native_handle_type
+            - std::thread_local             std::scoped_lock                    std::recursive_mutex
+            - std::timed_mutex              std::unique_lock                    std::shared_lock
+            - std::condition_variable       std::condition_variable_any
+
+        c. Operations
+            - std::thread(func, args...)
+            - std::this_thread::get_id()                
+            - std::this_thread::sleep_for()
+            - std::this_thread::sleep_until()           
+            - std::this_thread::yield()            :-  suggest system scheduler that current thread should yeild its execution (current thread willing to give up cpu)
+            - std::thread::hardware_concurrency()  :-  returns no of cuncurrent thread supported by hardware
+            - std::thread::join()                  :-  blocks calling thread until child thread is finished
+            - std::thread::detach()                :-  detach from std::thread object to execute independently
+            - std::thread::swap()                  :-  swap thread states
+            - std::thread::native_handle()         :-  return native handle associated with thread. avoid it
+            - std::thread::joinable()              :-  not detached and joined
+            - std::async()                         :-  func template for launching async tasks
+            - std::call_once()                     :-  calls exactly once, std::once_flag
+
+        d. Locking
+            - std::unique_lock()  :-  flexible conditional locking and manual unlocking
+            - std::lock_guard()   :-  simple lock acquire mutex at construction and release at destruction
+            - std::scoped_lock()  :-  c++ 17, locks all locks in deadlock free manner, guarantees all locks are acquired or none are
+            - std::recursive_mutex :-  allow same thread to lock it multiple times w/o causing deadlock
+            - std::timed_mutex    :-  provide ability to attempt locking with a specified timeout. if cannot then return and continue work
+            - std::shared_lock()  :-  allow muti threads to read shared resource. c++ 17, std::shared_mutex
+
+    3. POSIX thread
+        a. <pthread>
+        b. Types
+            - pthread_t             :-  Represents a thread identifier.
+            - pthread_attr_t        :-  Represents thread attributes.
+            - pthread_mutex_t       :-  Represents a mutex (mutual exclusion) object.
+            - pthread_mutexattr_t   :-  Represents mutex attributes.
+            - pthread_cond_t        :-  Represents a condition variable.
+            - pthread_condattr_t    :-  Represents condition variable attributes.
+            - pthread_rwlock_t      :-  Represents a read-write lock.
+            - pthread_rwlockattr_t  :-  Represents read-write lock attributes.
+            - pthread_key_t         :-  Represents a thread-specific data (TSD) key.
+            - pthread_once_t        :-  Represents a control variable for pthread_once().
+
+        c. Thread Creation and Management
+            - pthread_create()          :-  Create a new thread.
+            - pthread_exit()            :-  Terminate the calling thread.
+            - pthread_join()            :-  Wait for a thread to terminate.
+            - pthread_detach()          :-  Detach a thread.
+            - pthread_self()            :-  Get the calling thread's ID.
+            - pthread_equal()           :-  Compare two thread IDs for equality.
+            - pthread_cancel()          :-  Request thread cancellation.
+            - pthread_setcancelstate()  :-  Set thread cancellation state.
+            - pthread_setcanceltype()   :-  Set thread cancellation type.
+            - pthread_testcancel()      :-  Test for thread cancellation.
+
+        d. Thread Attributes
+            - pthread_attr_init()               :-  Initialize thread attributes.
+            - pthread_attr_destroy()            :-  Destroy thread attributes.
+            - pthread_attr_getdetachstate()     :-  Get thread detach state.
+            - pthread_attr_setdetachstate()     :-  Set thread detach state.
+            - pthread_attr_getstacksize()       :-  Get thread stack size.
+            - pthread_attr_setstacksize()       :-  Set thread stack size.
+            - pthread_attr_getstack()           :-  Get thread stack attributes.
+            - pthread_attr_setstack()           :-  Set thread stack attributes.
+
+        e. Mutexes
+            pthread_mutex_init()            :-  Initialize a mutex.
+            pthread_mutex_destroy()         :-  Destroy a mutex.
+            pthread_mutex_lock()            :-  Lock a mutex.
+            pthread_mutex_trylock()         :-  Try to lock a mutex.
+            pthread_mutex_unlock()          :-  Unlock a mutex.
+            pthread_mutexattr_init()        :-  Initialize mutex attributes.
+            pthread_mutexattr_destroy()     :-  Destroy mutex attributes.
+            pthread_mutexattr_getpshared()  :-  Get mutex process-shared attribute.
+            pthread_mutexattr_setpshared()  :-  Set mutex process-shared attribute.
+
+        f. Condition Variables
+            - pthread_cond_init()           :-  Initialize a condition variable.
+            - pthread_cond_destroy()        :-  Destroy a condition variable.
+            - pthread_cond_wait()           :-  Wait on a condition variable.
+            - pthread_cond_timedwait()      :-  Wait on a condition variable with a timeout.
+            - pthread_cond_signal()         :-  Signal a condition variable.
+            - pthread_cond_broadcast()      :-  Broadcast to all waiting threads.
+            - pthread_condattr_init()       :-  Initialize condition variable attributes.
+            - pthread_condattr_destroy()    :-  Destroy condition variable attributes.
+
+        g. Read-Write Locks
+            - pthread_rwlock_init()           :-  Initialize a read-write lock.
+            - pthread_rwlock_destroy()        :-  Destroy a read-write lock.
+            - pthread_rwlock_rdlock()         :-  Lock for reading (shared lock).
+            - pthread_rwlock_wrlock()         :-  Lock for writing (exclusive lock).
+            - pthread_rwlock_unlock()         :-  Unlock a read-write lock.
+            - pthread_rwlock_tryrdlock()      :-  Try to read-lock.
+            - pthread_rwlock_trywrlock()      :-  Try to write-lock.
+            - pthread_rwlockattr_init()       :-  Initialize read-write lock attributes.
+            - pthread_rwlockattr_destroy()    :-  Destroy read-write lock attributes.
+
+        h. Thread-Specific Data (TSD)
+            - pthread_key_create()    :-  Create a TSD key.
+            - pthread_key_delete()    :-  Delete a TSD key.
+            - pthread_getspecific()   :-  Get TSD value for a key.
+            - pthread_setspecific()   :-  Set TSD value for a key.
+
+        i. Miscellaneous
+            - pthread_once()              :-  Execute a function once.
+            - pthread_atfork()            :-  Prepare for fork() in a multi-threaded program.
+            - PTHREAD_MUTEX_INITIALIZER   :-  Initialize a mutex statically.
+            - PTHREAD_COND_INITIALIZER    :-  Initialize a condition variable statically.
+            - PTHREAD_RWLOCK_INITIALIZER  :-  Initialize a read-write lock statically.
+
+    4. Drawbacks
+        a. race condition
+        b. deadlock conditions (4 coffins)
+            - mutual exclusion :-  only one process can hold lock
+            - hold and wait    :-  hold and wait atleast one resource
+            - no preemption    :-  only voluntarily release
+            - circular wait    :-  circular wait of 2 or more process
+        c. prevention
+            - preemption -> Starvation -> ovecome by aging
+            - timeouts
+            - termination
+            - wait die, wound wait schemes
+
+    5. Locks
+        a. mutex         :-  protecting shared data
+        b. condition var :-  coordination and signaling
+        c. atomic op     :-  access without locks(thread safe)
+        d. semaphore     :-  controlling access with limited resource
+
+    6. Atomic
+        a. use atomic hardware instructions (compare and swap - CAS, LL/SC, FAA)
+        b. can be executed without interruption, rely on compiler and hardware
+        c. use lock-free and wait-free algorithms
+        d. <atomic>, work with primitive data types, no containers
+        e. Operations
+            - load()        :-  automatically loads value
+            - store()       :-  automatically stores value
+            - exchange()    :-  replace value and return previous value
+            - fetch_add()   :-  automatic addition
+            - fetch_sub()   :-  automatic subtraction (or,xor,and)
+            - compare_exchange_strong() :-  compare, if equal replace
+            - compare_exchange_weak()   :-  Compare and swap operations even if not equal
+            - is_lock_free()
+        f. Memory ordering
+            - memory_order_relaxed  :-  no memory ordering constraints (visibility and synch)
+            - memory_order_consume  :-  for read-modify-write operations (deprecated)
+            - memory_order_acquire  :-  ensure all previous operations are visible before operation (prevent read-before-write)
+            - memory_order_release  :-  ensure all subsiquent operations are visible after operation (prevent write-after-read)
+            - memory_order_acq_rel  :-  combines both acquire and release semantics
+            - memory_order_seq_cst  :-  sequential consistency, ensuring total order of operations. most restrictive (default)
+
+    7. Async
+        a. threads ->  control, multicpu usage, low latency, high memory overhead, sync issues
+        b. Async   ->  used for I/O bound operations, w/o threads, lightweight
+        c. relies on events and callbacks
+        d. not well for cpu bound operations
+        e. <future>  :  std::async, std::future, std::promise
+        f. Classes
+            - std::future        :-  represents a value that may not be available yet but will be in the future.
+            - std::promise       :-  allow set value or exception in std::future from different threads
+            - std::packaged_task :-  wraps a callable object and associates it with std::future
+            - std::shared_future :-  shared version of std::future, accessed by multiple threads
+        g. Functions
+            - std::async()         :-  creates a new thread or uses thread from thread pool to execute function asynchronously. returns std::future
+            - std::future::get()   :-  wait if value is not available, else retrieve value from std::future
+            - std::future::valid() :-  check if associated with shared state (promise)
+            - std::future::wait()  :-  blocks current thread until std::future has valid result
+            - std::future::wait_until()     :-  wait or until time is reached
+            - std::future::wait_for()       :-  wait or for time
+            - std::promise::get_future()    :-  returns std::future associated with std::promise
+            - std::shared_future::share()   :-  creates a shared future
+            - std::launch::async            :-  policy that creates new thread 
+            - std::launch::deferred         :-  policy that deferes function execution until its value is fetched using get()
+
+
+## C++11
+    1. keywords :-  auto,   constexpr,   static_assert,   override,   final,  nullptr
+    2. range based for loops                              3. lambda expressions
+    4. rvalue references and move semantics               5. smart pointers
+    6. std::thread                                        7. type traits
+    8. initializer list {}                                9. variadic templates
+    10. delegating constructors                           11. unordered_map, unordered_set, array
+    12. <regex>, <atomic>, <future>
+
+## C++14
+    1. binary literals(0b)                                2. generic lambda
+    3. variable templates                                 4. aggregate member intialization
+    5. std::make_unique                                   6. <shared_mutex>
+
+## C++17
+    1. inline variables                                   2. [[maybe_unused]]
+    3. std::any                                           4. <filesystem>
+    5. std::byte                                          6. std::Invoke
+    7. consteval                                          8. deprecated : std::auto_ptr
+    9. std::variant
+
+## C++20
+    1. coroutines                                         2. three way comparision <=>
+    3. <bit>                                              3. <execution> <jthread>
+    4. <format>                                           5. std::condition_variable_any
+

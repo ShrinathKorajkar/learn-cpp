@@ -1,0 +1,34 @@
+# Doxyfile configuration for the project
+
+# Project information
+PROJECT_NAME           = "MyProject"
+PROJECT_VERSION        = "1.0"
+OUTPUT_DIRECTORY       = ./docs
+
+# Input source code directories
+INPUT                  = ./include \
+                         ./src
+
+# File patterns to include
+FILE_PATTERNS          = *.cpp \
+                         *.h
+
+# Recursively search for source files
+RECURSIVE              = YES
+
+# Exclude directories or files
+EXCLUDE                = ./lib \
+                         ./output \
+                         ./include/json
+
+# Example code paths
+EXAMPLE_PATH           = ./examples
+
+# LaTeX output (optional, enable if needed)
+GENERATE_LATEX         = NO
+
+# Extract documentation even from undocumented entities
+EXTRACT_ALL            = YES
+
+# Warn if undocumented entities are encountered
+WARN_IF_UNDOCUMENTED   = YES

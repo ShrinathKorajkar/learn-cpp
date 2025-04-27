@@ -1,0 +1,45 @@
+# install
+    - sudo apt-get install mysql-server
+    - sudo service mysql status
+    - sudo apt install libmysqlcppconn-dev
+    - mysql -u root -p    or 
+    - sudo mysql
+
+# User permissions
+    - CREATE USER 'yourusername'@'localhost' IDENTIFIED BY 'yourpassword';
+      GRANT ALL PRIVILEGES ON yourdatabase.* TO 'yourusername'@'localhost';
+      FLUSH PRIVILEGES;
+
+# test
+    - CREATE DATABASE test;
+      USE test;
+      CREATE TABLE IF NOT EXISTS example (id INT, name VARCHAR(50));
+
+# run
+    - g++ -o my_program my_program.cpp -lmysqlcppconn
+    - ./my_program
+
+# start/stop mysqlserver
+    - sudo service mysql start  |  sudo systemctl start mysql
+    - sudo service mysql stop   |  sudo systemctl stop mysql
+
+# recover root password
+    - sudo service mysql stop
+    - sudo mysqld_safe --skip-grant-tables --skip-networking &
+    - mysql -u root
+    - USE mysql;
+      UPDATE user SET authentication_string=PASSWORD('new_password') WHERE User='root';
+      FLUSH PRIVILEGES;
+    - EXIT;
+    - sudo service mysql restart
+
+# Configure MySQL
+    - By default, MySQL is only accessible from localhost. If you want to allow remote connections, 
+      you'll need to modify the MySQL configuration file. Open the MySQL configuration file using a text editor:
+    - Find the line that starts with bind-address and comment it out or set it to the IP address of your 
+      server to allow remote connections. For example:
+    - sudo nano /etc/mysql/mysql.conf.d/mysqld.cnf
+      #bind-address = 127.0.0.1
+      sudo systemctl restart mysql
+
+

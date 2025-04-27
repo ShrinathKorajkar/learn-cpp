@@ -1,0 +1,222 @@
+# WORK FLOW
+                local                           |      remote
+working dir | staging area | local repo (.git)  |
+            |     index    |                    |
+            |              |                    |
+
+Linus Torvalds  :-  creater of git 2005, and linux OS
+
+
+# Notes
+1. Origin   :- remote repo url
+2. HEAD     :- last commit
+3. index    :- staging area
+4. create token for pushing into repo after clone
+5. all username and passwords are stored in .ini file and written in .gitignore
+6. we cannot delete branch on which we are
+7. fast forward merge :- linear path from current branch is merged with target
+       |-*---*----|     // branch
+    *----*--------*     // main
+=>    
+    *----*---*----*     // fast forward merge
+    *----*--------*     // no fast forward merge
+8. main -> featureone -> change fileA => merge conflict
+           featuretwo -> change fileA
+9. Merge commits   :-   By default, Git creates a new commit to represent the merge operation.
+10.git restore     :-   undo add
+   git revert      :-   make specified commit as current commit (go to previous commit)
+   git reset       :-   undo last commit
+11. difference between ff and no-ff is a new commit message
+12. to restore deleted branch  :-  git reflog, git checkout -b branch <hash>
+13. "detached HEAD" state (not on any branch)
+
+
+
+## GIT ALIAS
+ => used to create alias for frequently used commands
+ 1. git config --global alias.<newAlias> "command for which you want alias"
+ 2. git <newAlias>
+ 3. git config --global --unset alias.<name>
+
+ Eg:-    git config --global alias.abc "git push origin master"
+        git abc
+
+
+## GIT IGNORE
+ => Used to ignore the important files
+ 1. create important files
+ 2. create .gitignore file and add the filenames to the .gitignore file
+
+
+# git config --global user.name ""
+# git config --global user.email ""
+# git init                       =>      Initialize the git repository
+# git fork                       =>      create copy of repository w/o affecting curr repo
+# git ls-files                   =>      to see the tracked files
+# git mv <oldfile> <newname>     =>      to rename or move files => remove old files and rename new files
+# git rm <filename>              =>      to remove tracked files
+# git fetch <remote>             =>      download changes without merging them
+# git restore --staged <file>    =>      to unstage/uncommit
+
+
+# git clone <repo>               =>      copy the remote repository to local system
+ 1. --branch=<branchName>        :-      clone the branch
+ 2. --depth=<number>             :-      clone only last <number> commits
+
+
+# git add <filename>             =>      add changes to staging area
+ 1. -u                           :-      add files except new files
+ 2. -p                           :-      interactively adds (review)
+ 3. --intent-to-add              :-      adds that doesn't exist in staging area
+
+
+# git commit                     =>      save changes to local git repo
+ 1. -m "<message>"               :-      message to describe changes
+ 2. -a                           :-      stages all changes before commit (only tracked files)
+ 3. -v                           :-      shows the diff of the changes being commited
+ 4. --amend                      :-      modifies previous commit with changes staged (changes the previous commit with new)
+
+
+# git push <remote> <branch>     =>      upload loacal repo to remote repo (origin master)
+ 1. -u                           :-      set upstream branch
+ 2. --force                      :-      force push even in no fast forward changes (Overwrites)
+ 3. --all                        :-      pushes all branches
+ 4. --delete                     :-      deletes branch from remote which is deleted at local
+ 5. -n / --dry-run               :-      shows what pushed w/o actally pushing
+ 6. --prune                      :-      remove all branches from remote not in local
+ 7. --atomic                     :-      atomic action / either happen or not
+
+
+# git pull <remote> <branch>     =>      Fetches and merges changes from a remote repository
+ 1. --rebase                     :-      apply changes from remote on top of local changes, instead merging them
+ 2. --all                        :-      fetches all branches
+ 3. --ff or --no-ff              :-      fast forward if available or create merge commit
+ 4. -n / --dry-run               :-      dry run
+ 5. --depth=<depth>              :-      limit no of commits fetched
+ 6. --quiet, --prune, --force    :-      other
+
+
+# git status                     =>      current status of local repo
+ 1. -s                           :-      display status in a short format
+ 2. -b                           :-      display current and tracking branch
+ 3. -u                           :-      display untracked files
+ 4. -v                           :-      display in verbose format
+
+
+# git log                        =>      shows the commit history
+ 1. --oneline                    :-      displays in condensed format in single line
+ 2. -n <number>                  :-      limits the number of commits to displayed
+ 3. --author="<authorName>       :-      filter the commits by author
+ 4. --since="<dateTime>"         :-      filter the commit by date
+    --until="<dateTime>"
+ 5. --grep="<search>             :-      filter the history by message
+ 6. -- <filename>                :-      show all changes in file
+ 7. --all --graph --decorate --oneline --no-merges
+
+
+# git branch                     =>      manage branches
+ 1. <branchName>                 :-      creates a new branch
+ 2. -d <name>                    :-      deletes specified branch
+ 3. -m  <old> <new>              :-      rename branch
+ 4. -r                           :-      display remote branches
+ 5. -a                           :-      display all branches (local, remote)
+ 6. --merged                     :-      display all merged branches
+
+
+# git checkout <branch/commit>   =>      switch btwn branches or commits
+ 1. -b                           :-      creates new branch and switches to it
+ 2. -f                           :-      discard local changes and switch
+ 3. -p                           :-      patch or interactively selects changes
+ 4. -- <file>                    :-      discard changes to specified file and revert it to version in specified branch
+ 5. --conflict=<style>           :-      shows conflict during merge or rebase - 
+                                         merge  :-  shows ours, theirs
+                                         diff   :-  shows previous without ours, theris too
+                                         diff3  :-  similar like diff
+ 6. --ours/theirs  <filename>    :-      in conflict which to keep
+ 7. - git checkout <commit-hash> :-      bring you in detached state
+    - git checkout <branch-name> :-    bring back to branch
+    - The hyphen (-) with git checkout - is a shorthand to switch back to the previous branch.
+
+
+# git merge <branchName>         =>      merge changes from specified branch to current branch 
+ 1. --no-ff                      :-      force to merge, no fast forward
+ 2. --abort                      :-      abort merge operation and restore the state to before merge
+ 3. -m                           :-      specify commit message to merge commit
+ 4. Merge stratergies            :-      Recursive:   default, performs a three-way merge and resolves non-conflicting changes.
+                                         Octopus:     merging multiple branches at once.
+                                         Resolve:     resolve conflicts by favoring the current branch's changes. (fast forward)
+                                         Ours/Theirs: favor changes from current branch (ours) or branch being merged (theirs).
+ 5. -s <stratergies>             :-      stratergy from above
+ 6. --continue                   :-      continue merge after conflict
+
+
+# git diff                       =>      differences between two commits or working directory and the staging area
+ 4. git diff                     :-      changes btwn staging area and WD
+ 1. --cached                     :-      last commit and the staging area
+ 5. HEAD                         :-      last commit and WD      
+ 2. --name-only                  :-      show only names no diff
+ 3. --stat                       :-      statistics - no of lines, %, etc
+ 7. --"filename"                 :-      to see the differences in only one file
+ 8. <cmtid1> <cmttid2>
+ 9. master origin/master         :-     master(HEAD)
+ 10. <branch> <branch>
+
+
+# git stash save "message"       =>      temporarily save changes not ready to commit yet
+ 1. --keep-index                 :-      stashes changes in working dir but not index
+ 2. --include-untracked          :-      stashed WD and Untracked files
+ 3. git stash list               :-      list all stashes 
+ 4. '' apply                     :-      applies changes from most recent stash to WD. do not remove it
+ 5. '' pop                       :-      same as apply but remove stash from stash list
+ 6. '' drop                      :-      removes all stash
+
+
+# git remote                     =>      manage remote repo
+ 1. add <name> <url>             :-      add new remote repo with specified name to local repo
+ 2. show origin                  :-      shows info about remote repo
+ 3. rename <old> <new>           :-      renames specified remote repo
+ 4. remove <name>                :-      removes specified repo
+ 5. set-url <name> <newUrl>      :-      changes url
+ 6. get-url <name>               :-      display url of specified
+ 7. -v                           :-      current remote origin
+
+
+# git reset <commit>             =>      undo changes in local repo and move curr branch to specified commit, commit history is deleted
+ 1. --soft                       :-      change in local repo, but leave changes in index. changes branch pointer
+ 2. --mixed                      :-      change in local repo, leave changes in WD. changes branch pointer and staging area (default)
+ 3. --hard                       :-      change local, index, WD. changes branch pointer, staging area and WD
+ 4. --merge                      :-      reset index and update WD to match specified commit
+
+
+# git revert <commit>            =>     undo changes in local repo by creating new commit, previous commits are not touched
+ 1. -n                           :-     does not create new commit
+ 2. -e                           :-     opens commit message to edit before commiting
+
+
+# git restore                    =>     restore files and dir in staging area and WD
+ 1. --source=<commit>            :-     files and dir from specified commit
+ 2. --staged                     :-     only staged files
+ 3. --worktree                   :-     restore unstaged changes
+ 4. -SW / SM / WM                :-     source, WD, commit
+
+
+# git rebase <branch>            =>     apply changes from current branch on top specified branch
+ 1. --onto <branch> <startCommit> <endCommit>
+ 2. --abort                      :-     abort rebase operation and restore before operation
+ 3. -i HEAD~<number>             :-     interactive rebase allows you to edit, re-order, squash, or delete 
+                                        commits from the commit history.
+ 4. -i <commit>                  :-     a. pick   :-  keep commit as it is
+                                        b. reword :-  change commit message
+                                        c. edit   :-  pause rebase to add files etc
+                                        d. squash :-  combine selected commit with previous commit
+                                        e. fixup  :-  squash but discard all commit messages of selected
+                                        f. drop   :-  remove commit from history
+ 5. --continue                   :-     to continue paused rebase, push --force after rebase
+ 6. git pull --rebase            :-     A -- B -- C  (master)
+                                              \
+                                                D -- E -- F -- G  (feature)
+                                 =>     A -- B -- C -- D' -- E' -- F' -- G'  (master, feature) IN LOCAL
+
+
+# git chery-pick <commit>        :-     apply commit from one branch to current branch
+ 1. <commit1> <commit2> ...      :-     multiple commits, create new commits, do not delete previous

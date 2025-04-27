@@ -1,0 +1,117 @@
+# C COMPILATION PROCESS
+    1. PREPROCESSOR
+        a. takes .c file, include header files (#include), expand macro(#define), conditional compilation (#ifdef)
+        b. output is modified source code with a.i extension. (result -> translation unit)
+        c. #ifdef, #endif  :=  if macro already defined code compile else not
+        d. #ifndef, #endif :=  if marcro not defined, include dir
+        e. gcc -E myfile.c  >  preprocessedFile.i  // preprocessed or intermediate 
+
+    2. COMPILER
+        a. takes preprocessed code, output assembly code (.s), maintain symbol and error table
+        b. lexical analysis -> broke into tokens (keywords, identifiers, constant, operator)
+        c. syntax analysis  -> build parse tree or Abstract syntax tree (AST)
+        d. semantic analysis -> type checking, check variables defined, validate func call
+        e. intermediate code -> 
+        f. optimization     -> dead code elimination, constant folding, loop optimize, register allocation
+        g. target code gen  -> assembly code using instruction set
+        h. gcc -S myfile.c   =>   myfile.s
+
+    3. ASSEMBLY
+        a. takes assembly code and translate into machine code (.o)
+        b. binary instruction, specific to target machine
+        c. gcc -c myfile.s   =>  myfile.o
+    
+    4. LINKING
+        a. combining object files and resolve references btwn them
+        b. check duplicate symbols, necc system lib
+        c. final output is exe file (.exe for windows) stored in disk
+        d. gcc -v myfile.o  -o  myprogram
+
+    5. LOADING BY OS
+        a. os loads exe file, resolve ref, assign memory
+
+
+# MEMORY MANAGEMENT
+    1. malloc, calloc, realloc, free
+    2. dangling pointers   :-  points to loc which is deallocated or freed
+    3. memory map          :-  layout of mem in program's address space -> stack, heap, code segment, data segment(global and local)
+    4. null pointer error  :-  dereference pointer that has not been assigned mem
+    5. segmentation fault  :-  access mem outside alloc region, dereference dangling pointer
+    6. stack  -  1-8 mb,    heap   -  gbs
+
+
+# GCC (GNU Compiler Collection)
+    1. gcc [options] [source files] [object files] -o output file
+    1. options  =>    -c  :-  compile,no linking (object file)
+                      -o  :-  optimization level (output file)
+                      -E  :-  preprocessed code  -S -c -o
+
+
+# POINTERS 
+    1. dereference operator (*)
+    2. null pointer   :-   (*ptr = NULL)
+    3. void pointer   :-   cast to any datatype
+    4. print using    :-   %p 
+
+# DATA STRUCTURES
+    1. LINEAR DS    :-   organize, store in sequential manner; each element is connected to previous and next element
+    2. NON-LINEAR   :-   organize, store in hierarchical, arbitary manner; relationships - parent-child, traversal is complex
+
+
+# IMPORTANT FUNTIONS
+    1. strtok   :-   split a string using delimeter
+                =>   char *strtok(*str, *delim)
+                     char *token = strtok(str, ",");
+                     while(token != NULL){
+                        printf("%s", token);
+                        token = strtok(NULL, ",");
+                     }
+    
+    2. sscanf   :-   read formatted data from string
+                =>   int sscanf(*str, *format, output);
+                eg:  char str[] = "john doe 24";
+                     char firstName, lastName;
+                     int age;
+                     sscanf(str, "%s %s %d", firstName, lastName, &age);
+    
+    3. strdup   :-   create a copy
+                =>   char *strdup(*str);
+                eg:  char *substr = strdup(str + 5);
+
+    4. fscanf   :-   read data from file
+                =>   int fscanf(FILE *stream, *format, *output);   =>   no of input taken
+                eg:  FILE *file = fopen("data.txt", "r");
+                     char name, lastName;
+                     while(fscanf(file, "%s %s", name, lastName) == 2){
+                        ...
+                     }
+                     fclose(file);
+
+    5. strncpy  :-   substring copy
+                eg:  length = end - start + 1
+                     strncpy(result, str + start, length)
+                     result[lenght] = '\0';
+
+    6. strsep   :-   tokenize string
+                eg:  char str[] = "Hello, World! How are you?";
+                     char delimiters[] = " ,!";
+                     char* token;
+                     while ((token = strsep(&str, delimiters)) != NULL) {
+                        printf("%s\n", token);
+                     }
+
+
+# TREES
+    1. Node, edge, root, parent, child, leaf, sibling, depth(starting 0), height(max depth), subtree                    
+    2. Binary tree, BST, AVL(self balancing), heap, Trie
+    3. DFS - Preorder, Inorder, Postorder;    BFS (queue)
+    4. Insertion, deletion, search, traverse
+    5. application - fileSystems, DecisionTree, Binary Search
+    6. Full Binary Tree -  every node has 0 or 2 child, leaves at same level
+       Complete B-Tree  -  all levels filled except last, filled from right
+       Perfect B-Tree   -  all nodes have 2 children, leaves at same level (2^h - 1 leaves)
+       Balanced B-Tree  -  AVL, Red-Black tree
+       Bin Search Tree  -  left child < root > right child (log n insertion,deletion)
+       Threaded B-Tree  -  null is replaced with predecessor or successor
+
+      

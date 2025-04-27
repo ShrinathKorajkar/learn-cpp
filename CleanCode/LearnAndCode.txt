@@ -1,0 +1,355 @@
+# Notes
+    - loosely coupled :  When one module of code isn’t directly connected to another module of code
+    - clean code - easy to understand, easy to change, easy to test
+    - the pragmatic programmer
+    - stupid code - singleton, tight coupling, untestability, premature optimization, indescriptive naming, duplication
+
+
+# SOLID PRINCIPLES
+    1. Robert C Martin - Maintainable and scalabel Object oriented code
+
+    2. Single Responsibility Principle (SRP)
+        a. A class should have only one responsibility (it should do only one thing and well)
+        b. FileManager class - reading and writing => FileReader and FileWriter class
+        c. there should not be more than one reason for a class to change.
+        d. if multiple reasons are present in which class structure will change then it voilates SRP
+        Modem.java -- SRP Violation
+        interface Modem
+        {
+        public void dial(String pno);
+        public void hangup();
+        public void send(char c);
+        public char recv();
+        }
+
+    3. Open/Closed Principle (OCP)
+        a. Software entities (classes, modules, functions) should be open for extension and closed for modification
+        b. Shape class with draw method => inheritence and polymorphism to add new shapes - Circle and Square
+        c. As class is compiled and kept. no need of recompiling for inheriting it.
+
+    4. Liskov Substitute Principle (LSP)
+        a. Objects of superclass should be replacable with objects of subclass.
+        b. Bird -> Ostrich and Sparrow, we should be able to use sparrow and ostrich in place of bird without issue
+    
+    5. Interface Segregation Principle (ISP)
+        a. Small interfaces acc to clients 
+        b. scan, print => allInOnePrinter
+
+    6. Dependancy Inversion Principle (DIP)
+        a. high level modules should not depend on low level modules. abstraction should not depend on details
+        b. use of interface and abstraction -> flexibility
+        c. instead of creating two objects of sms and email in notification
+           create sender interface and make it implement by sms and email and create obj of sender in notification
+
+
+1. Clean Code
+    a. WTFs/min
+    b. Craftsmanship 
+        - Knowledge(principles, patterns, practices)
+        - Work(read code, right/wrong code, make bad code good)
+    c. Bad Code
+        - impeded by code
+        - wade through code
+        - felt relief of messy program work and decide working mess is better than nothing
+        - every change make code breaks
+        - productivity decreases to zero -> if productivity = 1/time
+        - change to bad code make it worse (building with broken windows)
+        - parts we ignore are where bugs hide.
+    d. Good Code
+        - cost effective
+        - matter of survival
+        - elegant, efficient, optimal, does one thing well
+        - readability (contain only what is necessary)
+        - can be enhanced by developer than auther
+        - which is taken care of (cannot be made better)
+        - reduced duplication, highly expressive
+        - does what you expect
+        - fewer bugs, faster debugging, and more efficient development processes.
+    e. It is the programmer that makes the language appear simple
+       If you want your code to be easy to write, make it easy to read
+       leave it cleaner than you found it
+    f. Challenges in clean code
+        - time constraints
+        - resistance to change
+        - complexity - code struc and archi
+        - consistency
+        overcome - learning curve, prioritize clean code, code review, documentation
+
+
+2. Naming Convention
+    a. Intention revealing name  :  why it exists, what it does, how it is used, context
+    b. Avoid disinformation      :  no abreviations, accounts should not be names accountList if it's not a list<>
+    c. Searchable name           :  pronounceable, noSingleLetter, noMagicNumbers
+    d. Avoid Encodings           :  hungarian notation(datatype+name), arru8NumberList, m_prefix in class members
+    e. Interface and Implement   :  interface must be root word, implementation can be encoded (User work with interface, implementation can be ugly)
+    f. Class and Objects         :  Classes and Objects -> noun,   methods -> verbs
+    g. Avoid Similar names       :  fetch, retrieve, get;  controller, manager ->  means same. avoid in same code base
+    h. Problem and Solutions     :  use solution names like jobQueue (use queue ds)
+    i. Context revealing         :  instead of firstName, addrFirstName for taking name for storing address
+
+    // Problem and Solution Domain Names:
+        - class Product{};
+        - class Warehouse{};
+        - class InventoryManager{};
+        - class Patient{};
+        - class Appointment{};
+        - class MedicalRecord{};
+
+        - class DatabaseConnector{};
+        - class QueryExecutor{};
+        - class DataMapper{};
+        - class NetworkManager{};
+        - class RequestHandler{};
+        - class ResponseParser{};
+
+
+3. Functions
+    a. Functions should be Small
+        - 30 lines, 80 chars max
+        - if-else, switch, loop indentation should be maximum 2
+        - statements inside these control statements should be one line long
+    b. Do One Thing
+        - one thing and well
+        - one level of abstraction (same level of detail) SLAP
+            1. high level functions delegate tasks to lower level functions
+            2. not mixing the level of detail
+        - function that do one thing cannot be divided into sections
+        - Have no Side Effect (doing something extra)
+        - there is no more than one reason for it to change
+    c. Stepdown Rule
+        - reading code from top to bottom
+        - every function to be followed by next level of abstraction
+    d. Avoid Switch/If-else ladder
+        - as they eventually grow and voilates SRP, Open/Closed principles
+        - hide them behind inheritance, polymorphism
+        - abstract factory - interface for creating families of related or dependent objects
+    e. Function Arguments
+        - arguments are harder from a testing POV
+        - should be only input arguments, if output then first input next output
+        - flag arguments(boolean) should be avoided => split it into two seperate functions
+        - function and arguments should form verb/noun pair. (write(name))
+        - monadic(single argument)
+            1. single argument and return boolean (answer something)
+            2. single argument and return after transforming it
+            3. single argument without return (event/message)
+        - dyadic(two arguments)
+            1. both arguments must be representing same value(point) or have natural ordering or symmetric
+        - triad(three arguments)
+            1. change arguments into objects to convert from triad to monad/diad (Point p)
+            2. use argument list (Integer... args)
+    f. Command Query Seperation
+        - function should either do something or answer something
+        - fundtion should change state of object or return info about object
+        - not both
+    h. Prefer exceptions over returning error codes
+        - error handling is one thing => there should be nothing after catch/finally blocks
+        - error handling should be seperated from logic (seperate func for error handling)
+    i. Don't Repeat Yourself (DRY)
+        - Dijkstra's rules
+        - one return statement, no break or continue, no goto statement
+        - modern => if func is small multi return is no harm
+        - structures programming -> control flow, scoping(declare variables where used), modules, no goto
+
+
+4. Comments
+    a. What and Why Comments
+        - failure to express using code
+        - older the comments -> farther they are from code -> code change but comment stays same -> comment lie(misguide)
+        - only code can tell you what it does
+        - before commenting check -> there is no other way,  is comment acurate
+        - any comment that force you to look in another module is a failure comment
+        - use variables, functions instead of comments
+    b. Good Comments
+        - legal             :  copyright, authorship (refer external doc is possible)
+        - informative       :  regex patterns explainations (what it is)
+        - intent            :  intent behind decision (choosing Queue size, calculations -> prime no range) (why it is used)
+        - clarification     :  while using std lib funcs, area where you cannot modify (strcmp() == 0) (what it means)
+        - warning           :  to warn others why not to change, consequences of change
+        - todo              :  To do notes -> reminder, request
+        - amplification     :  to show importance of silly looking things (trimming white spaces)
+        - Javadoc           :  tool for generating HTML documentation for API (purpose, usage, details)
+    c. Bad Comments
+        - mumbling          :  writing comments in hurry
+        - redundant         :  no need, obvious, info already present in code
+        - misleading        :  Eg -> the method return when it becomes true | return if it is true
+        - doc for Non-API   :  no need documentation for non-API methods
+        - journal           :  date, time, author of modification, creation
+        - noise             :  provide no new information (we start to ignore), non meaningful info, non-meaningful todo
+        - markers           :  to identify the position
+        - close brace       :  comments on closing brace -> while(){...} // while
+        - commented code    :  might mislead, no use
+        - non-local info    :  comment away from code it describes
+        - function headers
+        - too much info
+        - non-connection to code
+    d. Documentation
+        - help understand - purpose, functionality, usage, context, intent
+        - provide info    - design/architectural decisions, expected behaviour, usage patterns
+        - onboarding new developers -> understand code quickly
+        - api documentation -> library, framework, api help understand how to interact with it.
+    e. Use comments
+        - public apis or interfaces
+        - complex algorithms, logic
+        - design patterns and architecture
+        - external dependency and libraries
+        - explain how code handles edge cases and exceptions
+        - documentation for public apis, non obvious optimizations, algorithms, buisness logic
+   
+
+5. Formatting
+    a. Why
+        - neatness, consistency, attention to detail
+        - affect -> Maintainability and extensibility (coding style survives, even if code changes) 
+    b. Verticle Formatting
+        - topmost of source file -> high level concepts, details should Increase as we go down 
+        - group related lines (group represent thought, concept)
+        - seperate group by a blank line 
+        - concepts closely related should be kept close (users should not hop for understanding code)
+        - variables should be declared close to their usage
+        - instance variables at top of class
+        - caller func should be above callee
+        - functions with common naming scheme(getter/setter), variations of same basic task should be kept close
+    c. Horizontal Formatting
+        - set limit of wide line length
+        - use Horizontal space to associate things that are related and disassociate weakly related things
+        - use space around operators, proper indentation
+        - give {} around dummy loops or ; in next line
+        - team of developer should agree on single Formatting style
+        
+
+6. Objects and Data Structures(DS)(Data classes)
+    a. Data abstraction
+        - variables are private so that anyone else should not depend on them.
+        - hiding variables is not putting layer of function between variables. (not abstraction)
+        - just using interface, getters, setters doesn't mean abstraction
+        - abstraction -> hiding implementation
+        - non abstraction 
+            -- accessors of variables
+            -- expose details of data (getGallonsOfFuel)
+        - abstraction 
+            -- no clue about form of data 
+            -- express data in abstract terms (getPercentFuel)
+    b. Data and Object
+        - objects hide data behind abstractions and expose functions that operate on that data. ( class square {} )
+        - data structure expose data and have no meaningful functions (struct coordinate { int x, y; })
+        - fundamental dichotomy
+            -- procedural code(using DS)  ->  easy to add new functions w/o changing DS. Hard to add new DS as all functions must change.
+            -- OO code (using objects)    ->  easy to add new classes w/o changing funcs. Hard to add new functions as all functions must change.
+        - systems where new data types are added often than functions  ->  use objects and OO
+        - systems where new functions are added often than data types  ->  use procedural code and DS
+    c. Law of Demeter
+        - module should not know the innards of object it manipulates
+        - method m of class C should only call methods of
+            - C
+            - object created by m
+            - object passed to m
+            - object as instance of C
+        - apply only on objects and not data structures
+        - disadvantages
+            - a.b().c().d()  ->  tightly coupled, hard to test, extend
+            - if structure of objs change(method names, hierarchy), it breaks calling code  ->  maintainance and bugs
+            - violate encapsulation by giving access to internal structure, 
+        - we should be telling object to do something(performAction), not asking it about its internals(getVariable)
+        - data structures should expose data and have no funcs, objects provide service - it behaves and acts 
+        - if we tell lot of things to object, there will be lot of unnecessary funcs. thus if break this law, do it on purpose
+    d. Data Transfer Objects
+        - class with public variables and no functions.
+        - class with private variables and getters and setters -> bean (used in Networking)
+        - class with public or bean accessed variables with navigational methods -> active records (used in Database)
+        - these are DS and should not be used as objects by putting buisness rule methods
+        - create instance of these in seperate classes to hide internal data.
+        - Support -> encapsulation, serialization, deserialization, loose coupling, platform independent
+        - transfer between layers(presentation, buisness etc), network, (KISS - keep it simple, stupid)
+    
+
+7. Error Handling
+    - ensure code does what it is supposed to when things go wrong.
+    - it is important, but if it obscures(hide) logic, it is wrong
+    - use exceptions rather than returning error codes. seperate the logic and make code clear.
+    - write try-catch block first or test case which forces expection (create transaction)
+    - write unchecked exceptions(runtime) as checked exceptions violate encapsulation, OCP.
+    - prefer specific exceptions over general ones. more control to handling logic.
+    - provide context with exceptions, easy to debug where and why some exception occurred.
+    - error types - source(module) or type(device failure, nw failure, programming erro)
+    - wrap third-party APIs with custom unchecked exceptions. It minimise dependencies and easy to mock.
+    - do not add special cases in try, catch. create a special class that handles that (special case pattern).
+    - do not return null and do not pass null as parameter. They invite for errors.
+    - Use special case objects or throw exception instead returning null.
+    - see error handling as seperate concern or logic.
+
+
+8. Boundaries
+    - create wrappers around third-party libraries, code which you have not written
+    - write unit tests for wrappers not third-party libraries.
+    - depend upon something you control than something you cannot.
+
+
+9. Unit Tests
+    a. Why unit tests
+        - ensure changes to one part of system doesn't break other parts.
+        - encourages to write modular, loosely coupled code.
+        - severs and executable documentation for how code is expected to behave.
+        - if not present
+            -- start to fear making changes as it would do more harm than good.
+            -- bug riddled production code and frustrated customers.
+        - disadvantages
+            -- false sense of security - assume code is bug free.(still may have gaps in code coverage)
+            -- time consuming
+            -- dependency on code implementation making harder to make changes without failing tests.
+            -- over testing and under testing
+    b. TDD
+        - write failing tests, write code to pass the failing tests.
+        - advantages - reduce debugging time, higher test coverage, clear requirements
+        - disadvantages - time consuming, overhead on simple and frequent changes
+        - not suitable for - Projects with strict deadlines, rapidly changing requirements, 
+          or where exploratory development is required.
+        - we write more tests than production code - management problem.
+    c. Quick and Dirty Tests
+        - no short and descriptive tests
+        - not well designed and cover code
+        - the dirtier the tests, harder they are to change
+        - dirty tests are worse than no tests.
+    d. Clean Tests
+        - write readalbe tests - create functions for arrange, act, assert
+        - test environment needs are different, can do which should not in production
+        - minimise no of asserts per tests, single concept per test
+        - given-when-then conventions (given-when can be added into class, functions) - behaviour driven develpment(BDD)
+        - [MethodName]_[Scenario]_[ExpectedOutcome]
+        - testCalculateTotal_WithEmptyCart_ShouldReturnZero, testCalculateTotal_GivenEmptyCart_WhenCalculateTotalCalled_ThenReturnZero
+        - avoid implementation details in names - shouldThrowException instead of shouldThrowInvalidArgsException
+        - BDD workflow
+            - write scenarios -> create feature files -> implement steps -> execute tasks -> refactor and iterate
+            - bridge gaps between technical and non-technical stakeholders
+            - bridge gaps between buisness req and develpment
+        - FIRST - fast, independent, repeatable, self-validating, timely.
+        - repeatable in test, production, QA, non network env as well, timely written with production code
+
+
+10. Classes
+    a. 
+    
+
+# Other Notes
+    - Languages that strictly mandate structured programming : pascal, ada, modula2, algol68, fortran90, cobol 
+    - structured programming - single flow, control flow stmts, single entry single exit, structured data types, no goto, static scope, coding conventions
+    - Languages that do not follow structured programming : assembly, basic, fortran, malbolge (no control flow only goto)
+    - modern languages -> OOPS(dynamic dispatch), immutability, concurrency & parallelism, runtime modification
+    - structured programming enforces logical structure on control flow
+    - pascal 
+        program ExampleProgram;
+        var
+            x, y: integer;
+
+        begin
+            x := 10;
+            y := 20;
+
+            if x > y then
+                writeln('x is greater than y')
+            else
+                writeln('y is greater than x');
+        end.
+    - modern programming languages do not mandate -> flexibility(procedural, Obj oriented, error handling)
+
+
+

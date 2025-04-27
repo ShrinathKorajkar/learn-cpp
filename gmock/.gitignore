@@ -1,0 +1,16 @@
+# Build directories
+/build*/
+
+# IDE/editor files
+*.kdev4
+.kdev4/
+*.vcproj*
+*.vcxproj*
+*.ncb
+*.suo
+*.sdf
+*.sw?
+.vscode/
+*.backup
+.vs/
+CMakeSettings.json

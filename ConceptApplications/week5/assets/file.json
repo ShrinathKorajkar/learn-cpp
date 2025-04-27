@@ -1,0 +1,26 @@
+[
+    {
+        "EMPID": 1337,
+        "NAME": "Shrinath",
+        "AGE": 22,
+        "YEAR_OF_JOINING": 2023
+    },
+    {
+        "EMPID": 1338,
+        "NAME": "Prashant",
+        "AGE": 22,
+        "YEAR_OF_JOINING": 2023
+    },
+    {
+        "EMPID": 1339,
+        "NAME": "Rohit",
+        "AGE": 22,
+        "YEAR_OF_JOINING": 2023
+    },
+    {
+        "EMPID": 1335,
+        "NAME": "Navyashree",
+        "AGE": 22,
+        "YEAR_OF_JOINING": 2023
+    }
+]

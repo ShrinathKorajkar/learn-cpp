@@ -1,0 +1,42 @@
+{
+  "tests": 2,
+  "failures": 0,
+  "disabled": 0,
+  "errors": 0,
+  "timestamp": "2023-09-12T12:57:49Z",
+  "time": "0s",
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "StringManipulationTestSuite",
+      "tests": 2,
+      "failures": 0,
+      "disabled": 0,
+      "errors": 0,
+      "timestamp": "2023-09-12T12:57:49Z",
+      "time": "0s",
+      "testsuite": [
+        {
+          "name": "Concatenation",
+          "file": "testSuit.cpp",
+          "line": 7,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2023-09-12T12:57:49Z",
+          "time": "0s",
+          "classname": "StringManipulationTestSuite"
+        },
+        {
+          "name": "Length",
+          "file": "testSuit.cpp",
+          "line": 15,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2023-09-12T12:57:49Z",
+          "time": "0s",
+          "classname": "StringManipulationTestSuite"
+        }
+      ]
+    }
+  ]
+}

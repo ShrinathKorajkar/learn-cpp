@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites tests="2" failures="0" disabled="0" errors="0" time="0." timestamp="2023-09-12T12:55:47.218" name="AllTests">
+  <testsuite name="StringManipulationTestSuite" tests="2" failures="0" disabled="0" skipped="0" errors="0" time="0." timestamp="2023-09-12T12:55:47.218">
+    <testcase name="Concatenation" file="testSuit.cpp" line="7" status="run" result="completed" time="0." timestamp="2023-09-12T12:55:47.218" classname="StringManipulationTestSuite" />
+    <testcase name="Length" file="testSuit.cpp" line="15" status="run" result="completed" time="0." timestamp="2023-09-12T12:55:47.218" classname="StringManipulationTestSuite" />
+  </testsuite>
+</testsuites>

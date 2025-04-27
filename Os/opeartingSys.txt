@@ -1,0 +1,448 @@
+# OS
+    1. FORK  :-  same  :-  file descriptors, variables, data and signal handlers.
+                 diff  :-  pid, locks, ppid, threads, alarms.
+                 child share same memory space with parent but act independtly. (two child have diff mem space)
+    2. EXEC  :-  same  :-  loaded into same memory space. pid, ppid, uid, env variables.
+                 diff  :-  file descriptors, variables, data and signal handlers
+    3. Concurrency     :-  managing and scheduling multi task or process in interleaved manner. progress simultaneously
+       parallelism     :-  multi task simultaneously on diff processing unit.
+    4. Multi core      :-  each core function as independent processing unit.
+    5. Threads         :-  share same memory space, file descriptors, data
+                           seperate registers, stack   
+    6. Context Switch  :-  save current state, load new state, handover exe (PCB)
+    7. HyperThreading  :-  single core multi-thread handling
+    8. Mutex are binary semaphores
+    9. Kernel          :-  process mgmt, resource allo, communication, interrupt handling, file handling, 
+                           security, IPC, sys call, Nw directly interact with hardware.
+        os             :-  kernel, utilities, libraries, applications
+                       =>  kernel, memory manager, process manager, file system, device drivers, I/O manager, UI, 
+    10. PCB(process control blocks) are stored in scheduling queues
+    11. Aging is process of increasing the priorities of long waiting processe
+    12. init script    :-  startup and shutdown of system services and deamon
+
+                           
+
+# What is a Thread
+    A thread is an independent sequence of execution within a process. Threads share the same memory space,
+    file descriptors, and other resources of the process, allowing for concurrent and parallel execution. 
+    Threads enable programs to perform multiple tasks simultaneously and improve the overall responsiveness 
+    and performance of applications.
+
+
+# Benefits of Using Threads:
+    1. Concurrent Execution  :-  Threads allow for concurrent execution of multiple tasks within a program, 
+                                 enabling better utilization of CPU resources and improved responsiveness.
+    2. Parallelism           :-  Threads can be used to achieve parallelism by executing multiple threads 
+                                 across multiple CPU cores, maximizing computational performance.
+    3. Responsiveness        :-  With threads, applications can remain responsive during time-consuming operations, 
+                                 such as performing I/O, without blocking the entire program.
+    4. Modularity            :-  Threads enable the decomposition of complex tasks into smaller, more manageable 
+                                 units of work, facilitating code organization and maintainability.
+    5. Resource Sharing      :-  Threads can share data and resources within a process without the need for  
+                                 complex inter-process communication mechanisms.
+
+
+# Synchronization and Thread Safety:
+    1. Mutexes (Mutual Exclusion)  :-  Mutexes allow exclusive access to a shared resource by locking and unlocking a mutex object.
+    2. Semaphores                  :-  Semaphores are used to control access to a shared resource by allowing a 
+                                       specific number of threads to access it simultaneously.
+    3. Condition Variables         :-  Condition variables provide a way for threads to wait for a specific condition 
+                                       to be satisfied before proceeding.
+    4. Atomic Operations           :-  Atomic operations guarantee that a particular operation is performed without 
+                                       interruption, preventing race conditions.
+
+
+# Thread States:
+    1. Created, Running, Blocked/Waiting, Terminated/Exited
+
+
+# Thread Scheduling:
+    1. Preemptive Scheduling        :-  The operating system can interrupt and reschedule threads at any time.
+    2. Time-Sliced Scheduling(RR)   :-  Threads are allocated a fixed time slice. The scheduler switches to another thread.
+    3. Priority-Based Scheduling    :-  Threads are assigned priorities, and the scheduler prioritizes threads with higher priorities.
+
+
+# Common Thread Challenges:
+    1. Race Conditions      :-  occur when multiple threads access shared data concurrently.
+    2. Deadlocks            :-  when threads are blocked indefinitely because they are waiting for resources held by other threads.
+    3. Starvation           :-  happens when a thread is unable to gain necessary resources or execution time due to other higher-priority threads.
+
+
+# CPU CORES
+    1. Share  :-  l3 cache, ram, bus, instruction set
+    2. Diff   :-  l1, l2 cache, registers, ALU, control block
+
+
+# USER-LEVEL and KERNEL-LEVEL THREADS
+    1. Kernel-level
+        a. Managed and scheduled by kernel (creating, context switching > user-level)
+        b. Provide true concurrency and parallelism
+        c. Blocking one kernel thread do not block entire process
+    2. User-level
+        a. Managed by threading library or routines.
+        b. POSIX, Windows threads, lib in Java, Py (Thread Control Block)
+        c. For OS all user-level threads are single process (cannot run parallely)
+    3. Dif  :-  Mgmt, Concurrency & Parallelism, Resource Overhead, Blocking behaviour
+    4. mapping is done by os or libraries, one-to-one, etc
+
+
+# SIGNALS AND INTERRUPTS
+    1. Interrupts  :-  mechanism that enable hardware device to communicate with CPU and request its attention.
+        a. Cpu save current state -> switch to interrupt service routine.
+        b. hardware interrupts => keyboard, mouse, n/w interface
+           software interrupt  => exceptions, generated by cpu or system calls to request service from os
+        c. masking(disabled) => while in critical section
+        d. each cpu core has interrupt controller.
+        e. managed by kernel and hardware, handled by cpu
+        f. interrupts are hardware-generated events => interrupt CPU => handled by interrupt handler
+        g. time sensitive, critical
+        
+    2. Signals  :-  inter-process communication mechanism, process and os send asynchronous notifications to other process or themselves
+        a. process termination, handling exceptions, IPC
+        b. identified by Unique int nos, have symbolic names = SIGINT(interrupt), SIGSEV(segmentation violation)
+        c. invoke signal handler. => signal table
+        d. can be generated by hardware exceptions, user actions(ctrl+c), system calls (kill).
+        e. process can specify actions by installing handlers using signal(), sigaction().
+        f. Disposition/respond :- process termination, ignore, catch(handle), mask(block)
+        g. sigprocmask() :- masking
+        h. software-generated events (OS, process)  =>  delivered to processes
+        i. handled by kernel, can be both async, and sync
+        j. userdefined signal handlers in most os, interrupts in embeded sys only
+
+
+# PROCESS/CPU SCHEDULING
+    1. Process Scheduling   :-  activity of process manager(OS) that manages order in which process are allocated cpu time for execution. (Multiprogramming)
+    2. Categories           :-  preemptive - resource allocated for fix time
+                                non preemptive - resources can't taken until execution
+    3. Scheduling Criteria 
+        a. CPU utilization  :-  maximizing utilization                  =>  % of time cpu was buzy executing process
+        b. Throughput       :-  max no of process complete / unit time  =>  Completed processes / Time taken
+        c. Turnaround time  :-  min time taken for process to complete  =>  Waiting + Burst + I/O time
+        d. waiting time     :-  min time process spends in ready queue
+        e. response time    :-  min time taken for process to start after request is submitted. (execution start time - Arrival Time)
+        f. Burst time       :-  total time process require to complete execution w/o any interrupt.
+
+    4. Scheduling Queues
+        a. Job Queue        :-  Keeps all processes in the system (main memory)
+        b. Ready Queue      :-  Keeps processes residing in main memory, waiting to execute. (main memory)
+        c. Device Queue     :-  Blocked due to unavailability of I/O (secondary mem)
+    
+    5. Schedulers
+        a. Long-Term Scheduler   :-  Job Scheduler. loads process from job queue to ready queue. less speed
+        b. Short-Term Scheduler  :-  CPU Scheduler. allocate cpu to process. high speed
+        c. Medium-Term Scheduler :-  Swapping. remove process from main memory(blocked). Medium speed
+
+
+# SCHEDULING ALGORITHMS
+    1. First Come, First Serve (FCFS) Scheduling
+        a. simple, served in order they arrive in ready queue.
+        b. non preemptive, gets cpu till execution or blocked for i/o
+        c. poor avg waitng time. (convoy effect)
+    
+    2. Shortest Job Next (SJN) Scheduling
+        a. non preemptive
+        b. process with shortest burst time is selected. (often not possible in real sys)
+        c. minmize waitng time.
+        d. cpu time is known in advance
+
+    3. Shortest Remaining Time (SRT) Scheduling
+        a. preemptive
+        b. process with shortest remaining burst time is selected.
+        c. if new process with shorter burst time arrives, it preempts current process. (convoy effect)
+        d. better waitng time, overhead of context switch.
+
+    4. Round Robin (RR) Scheduling
+        a. preemptive scheduling
+        b. each process gets a fixed time (time slice/ quantum) to run on Cpu
+        c. after time expires, process is moved to ready queue
+        d. overhead of context switch
+        e. quantum lenght - 10-20 milli sec
+    
+    5. Priority Scheduling
+        a. assign priorities to process
+        b. can be preemptive or non preemtive
+        c. can lead to Starvation
+    
+    6. Multilevel Queue Scheduling
+        a. process are divided into diff queues based on attribute like priority.
+        b. each queue can have its scheduling algo and priority
+        c. served based on scheduling algo 
+        d. eg - real time process can have higher priority q.
+    
+    7. Multilevel Feedback Queue Scheduling
+        a. extension of multilevel queue scheduling
+        b. allow process to move between queues.
+        c. initially enter top queue with highest priority
+        d. after time slice demoted to lower priority
+        e. process that preform well can be promoted to higher priority
+
+
+# Other
+    1. Windows and Linux typically use a variation of the Round-Robin scheduling algorithm 
+       with dynamic priorities and time-sharing for process scheduling. macOS, on the other hand, 
+       uses a multilevel queue scheduling algorithm with priority-based preemption.
+    2. Cuncurrency - Multiprogramming,             Parallelism - Multiprocessing
+    3. MultiTasking     - concurrent execution of multi task in same os (RR scheduling),  specific form of multi programming
+       MulitProgramming - keep cpu buzy by loading multi programs in mem, share cpu (run next procc when one procc is blocked)
+       MultiProcessing  - multiple cpu
+       MultiThread      - multi thread of same process, share mem
+
+
+# INTER PROCESS COMMUNICATION
+    1. Theory
+        a. It is a mechanism and Techniques that enable process to communicate, share data, and synchronize with each other
+           in a multi-process(more than one process, not only in Multiprocessing but all env) environment.
+        b. Why - resource sharing (memory, files, devices)                              - data consistency - (modification of data)
+               - Cooperation (work together to achieve common goal)                     - load distribution   
+               - Concurrency (ensure synchronization and prevent conflicts)             - fault tolerance and error handling
+               - Modularity (creation of reusable comp) when task is divided            - process isolation (direct interfere)
+        c. Usage - process communication, server-client interaction (sockets, rpc), parallel processing, multithreading
+        d. mechanisms used by threads - msg q, pipes, semaphore, mutex, signals
+        e. semaphore :- control access using counter, signals, preemptive (no ownership), used for synchronization
+           mutex     :- lock, unlock, non-preemptive (ownership), used for protec shared data
+           next process is determined by os in both
+        f. buzy-wating (spinlock) :- process repeatedly checks a condition in loop until it is true, cpu is continuosly consumed by process
+           sleeping-waiting (blocking) :- process goes into sleep and cpu is free, it is woken up when condition of waiting becomes true
+        g. sync probls :-  consumer/producer, dining philosopher,
+        h. Applications :- kernel level process communicaiton - signal, pipe, socket, shared memory
+                           distributed systems - RPC, message queue (apache kafka, amazon sqs)
+                           Network - web server (apache, nginx uses sockets), chat apps (whatsapp use socket)
+                           multi-threading - parallel computing(shared mem)
+                           embedded sys - automotive vehicles, robots
+                           gaming - multiplayer games
+                           device drivers
+        i. direct   :- direct comm without intermediate mechanism
+           indirect :- intermediate mechanism where processes may not know sender and receiver
+           sync     :- sending process is blocked until receiver sends ack
+           async    :- sending process continue its work
+        j. Apps :- message apps, healthcare, automation, smart home, streaming, embedded
+
+    2. Types of IPC
+        - shared memory IPC - race condition (semaphore and mutex, condition varibles)
+        - message passing IPC - synchronous, asynchronous, direct, indirect(msg queues)
+
+    3. Shared Memory IPC
+        a. process share common region mapped to address space, exchange data by reading and writing to shared memory.
+        b. high performance - fast
+        c. synchronization and security req - prevent race condition and maintain data consistency, deadlocks
+        d. sync - semaphore and mutex
+        e. Applications - large stored computations, multi-threads, graphics rendering, real-time app
+                          complex data w/o serialization and deserialization
+        f. Use this when high throughput, low latency, frequent large data share, performance critical apps, efficient sync
+        g. shared mem api for creation, process req os to allocate mem, virtual address space
+        h. adv - high perf, eff data share, low overhead, synch
+           dis - complex sync, data consistency, portability
+        i. unnamed, named shared mem
+
+    4. Message Passing IPC
+        a. process exchange data by sending and receiving messages. isolated from each other and secred
+        b. rely on OS to manage message queues
+        c. controlled communication, synchronous or asynchronous, can be broadcasted as well, safe as no mem modification
+        d. Applications - distributed systems, client-server communication
+        e. disadv - message create, transmit, sync overhead, managing msq q can be complex, communication delay
+        f. synchronous, asynchronous, direct, indirect(msg queues)
+        g. direct   -> sender receiver address is specified(PID), and sends directly => precise communication (client-server)
+                       (precision, efficiency, control), message passing API
+           indirect -> intermediate mesg queue provided by os, sender simply sends message to queue, os handles rest
+                       receiver reads messages from queue, sender, receiver may not know each other
+                       Os overhead, delay due to queue (event-driven sys)
+                       msg q have id, (isolation, security, scalability, latency) present in kernel space (in RAM)
+        h. Use this for isolation, security, distributed sys, complex communication 
+        i. adv - isolation, portability, security, structured comm
+           dis - overhead of copy conext switch, synch overhead, limited data share, complex debugg
+
+    6. Pipes
+        a. pass data as one-way communication, In unix - file descriptors
+        b. types - unnamed, named
+        c. limited buffer size - if full, writing process is blocked, if empty, reading process is blocked
+        d. indirect, synchronous, message passing IPC
+        c. unnamed => - simple parent child communication, 
+                      - pipe() syscall -> return 2 file descriptors (read , write)
+                      - unnamed bcz related process, short lived
+                      - parent creates pipe for writing, child reads, after over OS reclaims resources
+        d. named   => - FIFO, general IPC, allow unrelated process to communicate
+                      - mkfifo() syscall or mkfifo cmd
+                      - name associated for communication with non related process
+                      - open pipe as file - r, w, rw mode, read(), write() func
+                      - persists even after creating process terminates
+                      - may require synchronization
+        e. security issues, latency   
+        f. adv - simple, structured and seq data
+           dis - one way comm, limited data, no random access, limited connectivity (child parent)
+
+    7. Signals
+        a. Used to notify process about events or async occurrences that req its attention
+        b. can be generated by os, hardware, process. Allow process to communicate, handle exceptions
+        c. generated using sys calls, they have unique numbers -> SIGSEGV, SIGINT, SIGTERM
+        d. handle options =>  process termination(default), ignore, catch(handle), mask(block)
+        e. signal(), sigaction(), 
+        f. used  ->  user interaction, child process mgmt, error handling, alarm
+        g. rentrancy  ->  a sig handler should be re-entered (stoped in middle and invoked again)
+           rules  ->  no static or global var, no call to non reenterant func, no change itself w/o sync
+        h. OS provides  ->  signal handler, interrupt handler
+        i. ctrl+c (keyboard interrupt) -> CPU -> interrupt handler(OS) -> signal to process -> SIGINT
+        j. SIGINT(2), SIGTERM(15), SIGKILL(9), SIGSTOP(19), SIGCONT(18), SIGHUP(1), SIGCHILD(17), SIGALARM(14),
+           SIGUSR1(10), SIGUSR2(12), SIGPIPE(13), SIGSEGV(11), SIGBUS(7), SIGFPE(8), SIGILL(4)
+        k. message passing IPC, can be both sync(SIGSEGV), async(SIGINT), direct indirect(kill())
+        l. lightweight, immediate response, predefined events
+        m. adv => lightweight, fast, async comm, 
+           disad => limited data, not guarantee sync, non reliable (lost, ingored), limited data, no order
+           
+    8. Socket Programming
+        a. It allows to communicate over network. processes as client and server
+        b. client initiate connection to server, server wait for incomming connections
+        c. emails, web server, games
+        d. both sync, async, direct(sent to receiver), indirect(sent to mesg q) message passing
+        e. non-blocking sockets (select, poll)
+        f. At physical level -> connector (plugin cable)
+        g. At software level -> program tha enable nw connection( IP add and port no)
+        h. even if communication is on same machine
+        i. It is an interface (programming abstraction)
+        j. Types
+            - Stream Sockets (TCP)
+                1. reliable, connection oriented, communication uses TCP
+                2. maintain continous stream of data, msgs are sent as sequence of bytes
+            - Datagram Sockets (UDP)
+                1. unreliable, connectionless communication use UDP
+                2. faster but not gurantee delievery or sequence of data
+                3. send discrete packets of data -> Datagram
+            - Raw Sockets 
+                1. allow direct access to low level nw protocols and data
+                2. used for crafting custom nw tools or implement nw protocols
+                3. provide more control but req careful handling
+            - Sequential Packet Sockets
+                1. combine stream and datagram.
+                2. reliable, connection oriented, with msg boundaries preserved
+                3. useful for apps that req message based communication with data integrity
+            - Unix Domain Sockets
+                1. communicaiton between processes running on same machine
+                2. use file system instead of IP and ports
+                3. fast w/o overhead of nw
+        k. create socket -> socket()
+           server socket -> bind(), listen()
+           accept client -> accept()
+           client socket -> connect()
+           send data TCP -> send(), recv()
+           send data UPD -> sendTo(), recvfrom()
+           socket option -> setsockopt()
+           handle out-of-band data -> send(), recv() with MSG_00B
+           DNS, IP resolution      -> getaddrinfo()
+           non blocking socket     -> fcntl(), ioctl()
+           asynchronous socket     -> select(), poll()
+           close connection        -> close()
+        l. adv - nw comm, versatile(local nw), full-duplex, portable
+           dis - nw overhead, complex, security
+        m. its cross platform compatibility, nw comm, reliable, flexible, security makes it most widely used
+
+    9. Remote Procedure calls
+        a. It is a protocol that allows programs to req service from remote server as if they were local
+        b. enable distributed applications to communicate seemlessly
+        c. based on client-server architecture, client initiate RPC req, server performs operation and return res
+        d. Interface definition language (IDL) :- used to describe Procedure, their param, return types
+        e. stubs are generated code that act as proxies on both client and server side (handle serialization/deserialization)
+        f. Marshalling :- process of converting Procedure arguments from native data type to format suitable for transmission over nw
+           demarshalling :- reverse process, allows to data to sent across diff pgm lang
+        g. steps :-  IDL specification, stubs generation, binding, marshalling, nw transmission, unmarshalling, procedure invoke
+                     marshalling and unmarshalling(results)
+        h. stubs are responsible for Marshalling and demarshalling, sending req and invoke actual procidure
+        i. advantages :-  abstraction, lang neutrality, Modularity
+        j. disadvantage :- performance overhead, latency, error handling
+        k. common framework :- gRPC - high perf by google,  
+                               COBRA - common object req broker arch for distributed objs
+                               Apache thrift - open source - efficient and scalable RPC service
+        l. client makes procedure call -> directed to RPC lib -> specify remote proc to invoke and args -> marshalling ->TCP or HTTP 
+           -> stub invoked -> unmarshall -> remote proc invoke -> marshalling or result -> unmarshalled by client stub -> return to caller
+        m. platform inde code -> byte stream (json, xml, binary)
+        n. adv - abstraction, lang neutral, transparency, 
+           dis - complex, performance(serialization), reliability, security
+
+    10. Other
+        a. fast - shared mem, direct socket
+        b. low latency - signals, message queue, -> real time apps
+        c. high throughput - pipe, sockets -> large data deal
+        d. distributed - sockets, rpc
+        
+        e. Access control - file permissions(named shared memory,pipes), credentials (socket)
+           
+        f. Applications :
+            - latency sensitive apps         :- sockets, shared memory
+            - high throughput data streaming :- message queues, sockets
+            - real time embedded system      :- shared memory, message passing
+            - distributed systems            :- RPC, sockets, message queues
+            - security and privacy           :- RPC, sockets, message queues (SSL/TLS protocols)
+            - scalability and load balancing :- message queues, sockets
+            - IPC in single system           :- shared memory, sockets
+            - Cross Platform                 :- RPC, sockets
+            - reliablity and gurantee dilver :- RPC, message queues
+            - mulit processor                :- shared memory, sockets
+            - mobile apps                    :- sockets, message queues
+
+        h. PC in multi-core and multi-processor :- cache coherence and memory visibility issue
+        i. most used -> sockets, message queues, shared memory, RPC
+
+
+# Memory Mangement
+    1. physical memory, logical memory
+    2. cpu -> logical address -> MMU(memory mgmt unit) -> physical address -> memory
+    3. virtual memory -> primary + secondary , paging, page fault, page table(CPU) -> dynamic loading
+    4. CPU -> Limit register -> relocation register -> memory
+    5. Fragmentation -> internal and external   =>  solutions -> shuffle, logical address(paging, segmentation)
+    6. demand paging
+
+
+# Memory in Unix
+    1. df -h
+    2. Filesystem               Size       Used     Avail     Use% 
+       /run/tmpfs               1.6 Gb    2.1 Mb    1.6 Gb    1%      :-  temp files during system runtime avail to process
+       /dev/sda2                457 Gb     28 Gb    406 Gb    7%      :-  root filesystem (All files and dir in system), Os is installed
+       /dev/shm/tmpfs           7.7 Gb     22 Mb    7.7 Gb    1%      :-  shared memory
+       /run/lock/tmpfs          5.0 Mb    4.0 Kb    5.0 Mb    1%      :-  for locking
+       /boot/efi/dev/sda1       511 Mb     43 Mb    469 Mb    9%      :-  EFI system partition (bootloader files)
+       /run/user/1001/tmpfs     1.6 Gb    120 Kb    1.6 Gb    1%      :-  user runtime data - user specific -> UID 1001 (each user has his own)
+
+    3. EFI -> Extensible Firmware Interface
+       ESP -> EFI System Partition
+       - A special partition on storage (HDD or SDD) for Unified Extensible Firmware Interface (UEFI).
+       UEFI -> modern replacement for traditional BIOS for enhanced boot
+
+
+# Network
+    1. SSL -> Secured Socket Layer (TLS Transport Layer security) 
+        - public, session, private key. :-  public, private key encypt and decrypt session key
+        - SSL certificate installed on server, sent to browser where it checks
+        - session key is used for encryption and decryption
+        - SSL version now renamed to TLS. v1.3 (curr)
+        - Digi Cert
+        - 3 way handshake for ssl
+
+    2. TCP/IP
+        a. Application
+            - communicaiton services, interface (email, browser)
+            - HTTP, SMTP, POP3, FTP, DNS, SNMP, DHCP
+            - API
+
+        b. Transport
+            - connect different devices or hosts
+            - TCP, UDP
+            - manage data segmentation, reassembly, error checking, flow control, congestion control
+            - Sockets and Ports, firewalls
+            - ports are 16 bit
+
+        c. Network
+            - routing of packets of data btwn diff networks, Fragmentation
+            - logical addressing (IP) and packet forwarding, error reporting
+            - IP, ICMP  (32 bit IPv4, 128 bit IPv6)
+            - routers and gateways
+
+        d. DataLink
+            - Data frames, Medium access control
+            - ethernet, wifi, bluetooth
+            - switches and hubs, NIC card
+
+        e. Physical
+            - transmit raw binary data
+            - electric or optical bits, voltage level, data rates
+            - ethernet cable, optical fibre, coaxial cable (RJ45), radio waves
+
+
+            

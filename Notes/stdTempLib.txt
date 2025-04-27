@@ -1,0 +1,646 @@
+## STL Theory
+    a. Things stored with array -> size, data, type, starting address, bound checking
+    b. With character -> encoding info.  Classes ->  base info, access specifier
+    c. list, set, map -> non-continous alloc.
+    d. pair, touple, variant -> hetrogenous elem
+    e. list, vector -> 24 bytes,  pqueue -> 32,  deque,stack,queue -> 80,  map,set -> 48,   unord -> 56
+    f. Hierarchy
+        - Sequence containers   ->  array, vector, deque, list, forward_list   =>   linear stored
+        - Associative container ->  set, map, multiset, multimap               =>   sorted
+        - unordered associative ->  unordered""
+        - Adapter containers    ->  stack, queue, priority queue
+        - hetrogenous container ->  pair, touple
+    h. cbegin -> const iterator, cannot modify content
+    i. random access  ->  vector, array, deque
+    j. using ContainerType = typename Container::value_type; (to access data type in templates)
+    k. stable iterators ->  list, forward_list, set, map, multi-setmap
+    l. Iterator Hierarchy
+        - random access  ->  bidirectional  ->  forward  ->  input and output
+        - stack, queue, pq  ->  no iterator support
+
+
+## CONTAINERS
+    1. Vector
+        a. dynamic array like container. automatically grows in size. <vector>
+        b. dynamic size, random access, contigous memory, bidirectional iterators, stored by value.
+        c. when capacity exceedes ->  new_capacity *= 2;    copy all elements and deallocate previous
+        d. work with every relational operations
+        c. operations
+            - std::vector<Type> var
+            - vector()
+            - vector(size)
+            - vector(size, defaultVal)
+            - push_back(value)              :-  const T &value
+            - pop_back()
+            - insert(iteratorPos, value)    :-  iterator pos
+            - insert(iterPos, count, value) :-  insert multiple values at position
+            - insert(itrPos, itrBeg, itrEnd):-  insert from another container
+            - assign(itrBeg, itrEnd)        :-  replace all current elements from other container
+            - erase(iteratorPos)            :-  remove value at pos
+            - erase(iteratorBeg, itrEnd)    :-  remove values in range
+            - clear()                       :-  remove all elements
+            - empty()
+            - at(index)  or  []
+            - front()                       :-  data at beginning
+            - back()                        :-  data at end
+            - data()                        :-  return pointer to array
+            - size()                        :-  return elements present
+            - capacity()                    :-  return allocated capacity
+            - max_size()                    :-  maximum no of elements that can be stored
+            - reserve(new_capacity)         :-  define capacity
+            - std::swap(vector1, vector2)
+            - swap(vector)
+            - resize(new_size)
+            - resize(new_size, defaultVal)
+            - shrink_to_fit()
+            - begin(), end(), rbegin(), rend()
+            - emplace_back(args...)
+            - emplace(itrPos, args...)      :-  insert without creating temp objs
+        
+    2. Pair
+        a. <utility>
+        b. std::pair<Type1, Type2> myPair(value1, value2)
+        c. std::make_pair(value1, value2)
+        d. myPair.first    or     std::get<0>(myPair);
+        e. myPair.second   or     std::get<1>(myPair);
+        f. all logical operations can be performed
+        g. Operations => std::swap()
+
+    3. List
+        a. <list>
+        b. doublyLinkedList, efficient insert/delete, ordered, no_reallocation, no_direct_random_access, memoryOverhead
+        c. std::list<Type> myList = {};          std::forward_list<>  :-  singly linked list
+        d. stable iterators  :- iterator remain valid even after insert and delete
+        e. operations avail  :- relational(==, !=)
+        e. Structure  ->  begin_, end_, Node(prev, next)
+            =>  nullptr <- begin_ <-> [Node1] <-> [Node2] <-> ... <-> [NodeN] <-> end_ -> nullptr
+        
+        f. complexity
+            - insert/delete  -  O(1)
+            - accessByIter   -  O(1)
+            - accessByValue  -  O(n)
+            - sorting        -  O(nlogn)
+            - merging        -  O(n)
+        
+        g. operations
+            - begin()           end()           rbegin()        rend()
+            - empty()           size()          front()         back()
+            - assign()          insert()        erase()         clear()
+            - reverse()         sort()          swap()          
+            - push_back(),      pop_back(),     push_front()    pop_front()
+            
+            - splice()          :-  move elements from same or diff list
+              splice(itrPos, other)
+              splice(itrPos, other, itr)
+              splice(itrPos, other, itrBeg, itrEnd)
+
+            - remove(value)     :-  remove element with specific value
+            - remove_if(pred)   :-  remove element based on predicate
+            - unique()          :-  removes consicutive duplicate elements
+            - merge()           :-  merge two sorted list into one
+
+    4. Stack
+        a. underlying container => deque<T>
+        b. <stack>
+        c. std::stack<int, std::vector<int>> stackUsingVector;
+        d. complexity - O(1)
+        d. Operations
+            - empty()           size()              swap()              emplace()
+            - push()            pop()               top()
+
+    5. Queue
+        a. <queue>
+        b. FIFO, deque<T> container
+        c. complexity - O(1)
+        d. operations
+            - push()        pop()       front()         back()
+            - empty()       size()      swap()          emplace()
+        
+    6. Deque
+        a. <deque>
+        b. std::allocator<T>, dynamic size, random access, amortized O(1)
+        c. operations
+            - push_back()           push_front()            front()
+            - pop_back()            pop_front()             back()
+            - empty()               size()                  clear()
+            - begin()               rbegin()                end()
+            - rend()                resize()                swap()    ... every other in vector
+        d. complexity - O(1), resize(n)
+        e. dynamic array, add block of memory to front and back when capacity is reached. each block contains continous elements
+
+    7. Priority Queue
+        a. template <class T, class Container = std::vector<T>, class Compare = std::less<typename Container::value_type>>
+        b. <queue>
+        c. comparison function or functor, binary heap, default -> max-heap(std::less)
+        d. complexity  ->  push, pop (log n)
+        d. operations
+            - std::less<type>        std::greater<type>
+            - push()                 pop()                    top()             empty()
+            - size()
+        e. Sequence containers ->  vector(default), deque, array (random access [], <)
+
+    8. Array
+        a. std::array<int, size> array;
+        b. <array>
+        c. fixed size, compile time
+        d. operations
+            - size()            at()            begin()         end()
+            - assign()          fill(val)       front()         back()
+            - data()            empty()         max_size()      swap()
+
+    9. Set
+        a. ordered, unique, sorted in ascending, self-balancing bin search tree(Red Black Tree), in-order traversal iterator
+        b. <set>
+        c. complexity  -  O(log N)
+        c. operations
+            - begin()           end()           clear()         merge()
+            - size()            swap()          max_size()      emplace()
+
+            - std::set<key, compare, allocator>    =>   default std::less, alloc=<key>
+            - insert(key)       
+            - insert({val1, val2})
+            - find(key)         :-  return iterator to value if found. else return end()
+            - erase(key)        :-  remove value from set
+            - erase(itrPos)     :-  remove value present at iterator position
+            - erase(itrBeg, itrEnd) 
+            - count(key)        :-  return 1 if found key else 0
+            - lower_bound(key)  :-  return iterator to first element not less than key (>=)
+            - upper_bound(key)  :-  return iterator to first element greater than key  (>)
+            - equal_range(key)  :-  return pair of iterators denoting range of elements matching key
+            - key_comp()        :-  return comparison function which compares using key
+            - value_comp()      :-  similar to key_comp()
+
+    10. Map
+        a. <map>
+        b. key-value pairs, sorted on keys (asc), unique keys, balanced bin search tree
+        c. complexity -> O(log N)
+        d. inserting same key will replace the value
+        e. operations
+            - clear()           [key]           at(key)             find(key)
+            - begin()           end()           rbegin()            rend()
+            - count(key)        swap(map)       
+            - lower_bound()     upper_bound()   equal_range()       
+            - erase(key)        erase(itr)      erase(itrBeg, iteEnd)
+            - insert(std::pair<>())             insert(itr, std::pair<>())
+            - extract(key)
+            - std::map<key, T, comparator>
+
+    11. MultiSet and MultiMap
+        a. associative container, permits duplicate values, sorted order (std::less)
+        b. complexity = log n
+        c. std::multiset<>
+
+    12. hetrogenous
+        a. <any>    <variant>
+        b. std::vector<std::variant<int, double, std::string>> heterogeneousVector;
+        c. std::vector<std::any> heterogeneousVector;
+        d. std::holds_alternative<Type>(element)
+        e. element.type() == typeid(int)
+    
+    13. Unordered
+        a. set, map, multiset, multimap
+        b. use hash table, hash function, buckets, collision -> chaining, open addressing(probing)
+        c. complexity -> O(1)
+        d. not sorted, not ordered, no comparison(== etc) operators
+           unordered_set -> == and != are present
+        e. <unordered_map>          <unordered_set>
+        f. operations
+            - similar to ordered
+            - max_load_factor()    :-   get or set maximum load factor
+            - load_factor()        :-   get current load factor (size / bucket count)
+            - bucket(key)          :-   bucket number for key
+            - begin/end(bucket)    :-   return iterator for bucket
+            - bucket(count)
+            - bucket_size(bucket)
+            - rehash(count)        :-   rehash to have atleast count buckets
+            - reserve(count)       :-   reserve count buckets
+            - hash_function()      :-   get hash function obj
+            - key_eq()             :-   get key equality comparison func
+        g. overload == in keyClass and () in hashFunc for custom hashing
+        
+    14. Tuple
+        a. fixed size, compile time alloc, hetrogenous
+        b. <tuple>
+        c. operations
+            - make_tuple(args...)
+            - std::get<index>(tuple)
+            - std::tuple_element<N, Tuple>::type  :-  type of element at index N
+            - std::tuple_size<Tuple>::value       :-  no of elements in tuple
+            - auto [var1, var2] = myTuple         :-  Structure binding
+            - std::tuple_cat(t1, t2)              :-  concatenation
+            - comparison operators
+
+    15. heap
+        - std::make_heap(itrBeg, itrEnd, comparator)
+        - std::push_heap(itrBeg, itrEnd)
+        - std::pop_heap(")
+        - std::sort_heap(")
+
+    16. utility
+        - std::transform(srcBeg, srcEnd, dest, transFunc)
+        - std::accumulate(srcBeg, srcEnd, startValue)
+        - std::fill(srcBeg, srcEnd, value)
+        - std::copy(srcBeg, srcEnd, destBeg)
+        - std::min_element(srcBeg, srcEnd)
+        - std::max_element(srcBeg, srcEnd)
+
+
+## ITERATORS
+    1. Input Iterator
+        a. Single Pass (can iterate only once) 
+        b. read-Only
+        c. increementable (++)
+        d. comparable (== !=)
+        e. no arithmetic operations
+        f. types
+            - container::const_iterator
+
+    2. Output Iterator
+        a. Single Pass
+        b. Write-Only (Sequencial)
+        c. increementable
+        d. comparable (== !=)
+        e. no arithmetic operations
+        f. used for insertion, copy, modify data
+        g. Types 
+            - std::back_insert_iterator<std::vector<int>> outputIterator(container)     :-  vector
+            - std::front_insert_iterator<std::vector<int>> outputIterator(container)    :-  list
+            - std::insert_iterator<std::vector<int>> outputIterator(container)          :-  set and map          
+            - std::vector<int>::reverse_iterator outputIterator = container.begin()
+
+    3. Forward Iterator
+        a. forward movement
+        b. Single Pass
+        c. read and Write
+        d. comparison (==, !=)
+        e. no arithmetic operations
+        f. types 
+            - std::forward_list<>::iterator
+            - forward_list, unordered_map, unordered_set, unordered_mulitmap, unordered_mulitset
+
+    4. Bidirectional Iterator
+        a. Bidirectional movement
+        b. Single Pass
+        c. read and Write
+        d. comparable (==, !=, <, >)
+        e. no arithmetic operations
+        f. types
+            - std::list<int>::iterator
+            - list, set, map, multiset, multimap
+
+    5. Random access Iterator
+        a. random access
+        b. Single Pass
+        c. read and Write
+        d. allow arithmetic operations (+, -)
+        e. comparable every logical operation
+        f. types
+            - array pointer
+            - std::vector::iterator
+            - vector, deque, array, string
+
+    6. Iterator Adapter
+        - objects or classes that modify or extend behavior or iterators
+        - std::back_inserter        std::front_inserter
+        - std::istream_inserter     std::ostream_inserter
+        - std::reverse_iterator 
+        - std::move_iterator
+        - std::vector<int>::const_iterator it = numbers.cbegin();
+
+
+## ALGORITHMS   
+    1. Sorting Algorithms
+        - std::sort(cont1, cont2)   :-     vector, array, deque    (container with random access)
+        - std::stable_sort()
+        - std::partial_sort()
+        - std::is_sorted_until()
+        - std::is_sorted()
+        - make_heap(), heap_sort()  :-     vector, array
+        - container.sort()          :-     list, forward_list
+        - already sorted            :-     set, map, priority_queue
+        - sort by conversion        :-     stack, queue, unord set, unord map      (convert into vector and sort)
+        - Introsort                 :-     quick, heap, insertion mixture
+
+    2. Searching Algorithms
+        - std::binary_search()          std::count()            std::count_if()             std::find()
+        - std::find_first_of()          std::find_if()          std::search()               std::adjacent_find()
+        - std::lower_bound()            std::upper_bound()      std::equal_range()          std::find_if_not()
+        - std::search_n()
+
+        - forward_list, map, unordered set don't work
+        - binary_search(), lower_bound(), upper_bound(), equal_range()  ->  require sorted list
+   
+    3. Modifying Algorithms
+        - std::copy()               std::move()                 std::swap()                 std::swap_ranges()
+        - std::fill()               std::fill_n()               std::replace()              std::iter_swap()
+        - std::remove()             std::unique()               std::reverse()              std::rotate()
+        - std::shuffle()            std::partition()            std::sort()                 std::stable_sort()
+        - std::partial_sort()       std::merge()                std::inplace_merge()        std::next_permutation()
+        - std::prev_permutation()   std::generate()             std::generate_n()
+
+        - std::copy_if()            std::replace_if()           std::remove_if()            -> contain a predicate at end
+        - std::move_backward()      std::copy_backward()        
+        - std::replace_copy()       std::remove_copy()          std::unique_copy()          std::reverse_copy()
+        - std::rotate_copy()        std::partition_copy()       std::partial_sort_copy()    -> contain destination.begin()
+
+    4. Numeric Algorithms
+        - std::accumulate()                 std::inner_product()                std::partial_sum()
+        - std::exclusive_scan()             std::inclusive_scan()               std::transform_reduce()
+        - std::adjacent_difference()        std::iota()                         std::gcd()
+        - std::min_element()                std::max_element()                  std::min()
+        - std::max()                        std::clamp()                        std::count()
+        - std::nth_element()                std::is_partitioned()               std::lcm()
+                        
+    5. Set Algorithms
+        - std::set_union()              std::set_intersection()                 std::set_difference()   
+        - std::set_includes()           std::is_permutation()                   std::set_symmetric_difference()
+        - std::merge()
+
+    6. Heap Algorithms
+        - std::push_heap()              std::pop_heap()             std::make_heap()                
+        - std::sort_heap()              std::is_heap()              std::is_heap_until()
+        - std::priority_queue()
+
+    7. Non Modifying Algorithms
+        - std::for_each()                   std::equal()                    std::mismatch()
+        - std::all_of()                     std::any_of()                   std::lexicographical_compare()
+        - std::none_of()                    std::find_end()                 std::minmax_element()             
+
+
+## FUNCTION OBJECTS (FUNCTORS)
+    1. Theory
+        a. functors are object that act like a function. 
+        b. user defined class or struct that overloads () operator.
+        c. when you have instance(object) of functor, pass this instance without ()
+        d. when you dont have instance of functor, pass functor() as predicate
+
+    2. Stateful Functors
+        a. functors with state
+
+    3. STL Functors
+        - std::plus<T>              std::minus<T>               std::multiplies<T>              std::divides<T>
+        - std::modulus<T>           std::negate<T>              std::equal_to<T>                std::not_equal_to<T>
+        - std::greater<T>           std::less<T>                std::greater_equal<T>           std::less_equal<T>
+        - std::logical_and<T>       std::logical_or<T>          std::logical_not<T>             std::bit_and<T>
+        - std::bit_or<T>            std::bit_xor<T>             std::bit_not<T>
+
+        - std::less<void>                   ->  Pointer comparison functor (less-than).
+        - std::greater<void>                ->  Pointer comparison functor (greater-than).
+        - std::identity<T>                  ->  Identity functor (returns the input as-is).
+        - std::unary_function<T, R>         ->  Base class for unary functors. (deprecated)
+        - std::binary_function<T1, T2, R>   ->  Base class for binary functors.
+
+    4. Lambda Functors
+        a. also knows as Lambda expressions, anonymous functions, one-time use.
+        b. small, inline functions for concise way to create function objects.
+        c. used when to pass a function as argument.
+        d. [captures] (parameters) -> returnType {}
+
+        e. captures
+            - optional, specify what variables from surrounding scope lambda function can access.
+            - cannot capture static, global, constexpr variables as lifetime is more than lambda.
+            - [x]  :-  copy capture, copy of variable
+            - [&x] :-  reference capture, can modify the capture
+            - [=]  :-  implicit capture, capture all variables used inside lambda by value
+            - [&]  :-  implicit capture, capture all variables used inside lambda by reference
+            - [x, &y]
+            - [=, &y]
+            - [&, y]
+
+        f. if return type is omitted, it is deduced automatically.
+        g. const by default, use mutable keyword
+        h. Internal working
+            - compiler generate unique, anonymous functor type encapsulating lambda behavior.
+            - this anonymous function overloads () which contains lambda body
+            - generate member variables for captured variables
+            - generate constructor for initializing captured variables
+        i. Advantages and Disadvantages
+            - local scope, closure(capture), flexible, custom behavior, statefulness, function style
+            - readability, limited reusability, complexity, overhead, hard to test, cannot capture static var
+
+    5. Predicate Functors
+        - functors that define () and return bool value
+        - they have const ()
+        - used with algorithms, containers, costum filtering
+    
+    6. Comparator Functors
+        - functor that defines () and return bool value
+        - used for custom sorting and ordering -> std::sort, partial_sort, stable_sort, set, map, multimap
+        - return true if first element should come before second
+
+    7. Callable objects
+        - std::function and std::bind are used to call callable objects
+        - functions, functionPointers, functors, lambdas
+
+
+## MUSIC - Simple and Fast Multimedia Library (SFML)
+    sf::SoundBuffer: Represents an audio buffer that can hold audio data.
+    sf::Sound: Used to play and control sounds. It uses a sound buffer to store the audio data.
+    sf::SoundStream: An abstract base class for implementing custom audio streams. It is used for streaming audio data.
+    sf::Music: Used for playing and controlling music. It can load and play music files such as OGG, FLAC, or WAV.
+    sf::Listener: Represents the listener's attributes in 3D space, such as position and orientation. It is used for spatialized audio effects.
+    sf::SoundSouhellorce: Abstract base class for sound classes (e.g., sf::Sound and sf::Music) to provide common functionality like play, pause, and stop.
+    sf::Music::TimeSpan: Represents a time span within an sf::Music object. Used for setting and retrieving loop points in music.
+    sf::InputSoundFile: A helper class for reading sound files (WAV, FLAC, OGG, etc.) and accessing their properties.
+    sf::OutputSoundFile: A helper class for writing sound data to sound files.
+    sf::Music::Span: Represents a span of audio samples within an sf::Music object. Used for setting and retrieving loop points in music.
+    sf::AudioListener: A global object representing the listener's attributes, used for setting global listener properties.
+    sf::AudioDevice: Represents an audio device for capturing audio input.
+
+    1. sf::SoundBuffer Functions:
+        - `sf::SoundBuffer::loadFromFile(const std::string& filename)`: Load sound data from a file.
+        - `sf::SoundBuffer::loadFromMemory(const void* data, std::size_t sizeInBytes)`: Load sound data from memory.
+        - `sf::SoundBuffer::loadFromStream(sf::InputStream& stream)`: Load sound data from a custom input stream.
+        - `sf::SoundBuffer::getDuration() const`: Get the duration of the sound buffer.
+        - `sf::SoundBuffer::getSampleCount() const`: Get the total number of samples in the sound buffer.
+        - `sf::SoundBuffer::getSampleRate() const`: Get the sample rate (samples per second) of the sound buffer.
+
+    2. sf::Sound Functions:
+        - `sf::Sound::setBuffer(const sf::SoundBuffer& buffer)`: Set the sound buffer to play.
+        - `sf::Sound::play()`: Start playing the sound.
+        - `sf::Sound::pause()`: Pause the sound.
+        - `sf::Sound::stop()`: Stop playing the sound.
+        - `sf::Sound::setVolume(float volume)`: Set the volume of the sound.
+        - `sf::Sound::setPitch(float pitch)`: Set the pitch (playback speed) of the sound.
+        - `sf::Sound::setLoop(bool loop)`: Set whether the sound should loop.
+        - `sf::Sound::getStatus() const`: Get the current playback status of the sound.
+
+    3. sf::Music Functions:
+        - `sf::Music::openFromFile(const std::string& filename)`: Open and load music from a file.
+        - `sf::Music::openFromMemory(const void* data, std::size_t sizeInBytes)`: Open and load music from memory.
+        - `sf::Music::openFromStream(sf::InputStream& stream)`: Open and load music from a custom input stream.
+        - `sf::Music::play()`: Start playing the music.
+        - `sf::Music::pause()`: Pause the music.
+        - `sf::Music::stop()`: Stop playing the music.
+        - `sf::Music::setVolume(float volume)`: Set the volume of the music.
+        - `sf::Music::setPitch(float pitch)`: Set the pitch (playback speed) of the music.
+        - `sf::Music::setLoop(bool loop)`: Set whether the music should loop.
+        - `sf::Music::getDuration() const`: Get the duration of the music.
+        - `sf::Music::getPlayingOffset() const`: Get the current playback position.
+        - `sf::Music::getLoop() const`: Check if the music is set to loop.
+        - `sf::Music::getStatus() const`: Get the current playback status of the music.
+
+    4. sf::Listener Functions:
+        - `sf::Listener::setPosition(float x, float y, float z)`: Set the position of the listener in 3D space.
+        - `sf::Listener::setPosition(const sf::Vector3f& position)`: Set the position of the listener using a 3D vector.
+        - `sf::Listener::setDirection(float x, float y, float z)`: Set the orientation (direction) of the listener in 3D space.
+        - `sf::Listener::setDirection(const sf::Vector3f& direction)`: Set the orientation of the listener using a 3D vector.
+        - `sf::Listener::setUpVector(float x, float y, float z)`: Set the upward direction of the listener in 3D space.
+        - `sf::Listener::setUpVector(const sf::Vector3f& upVector)`: Set the upward direction of the listener using a 3D vector.
+
+    5. sf::MusicStream Functions:
+        - Functions for custom music streaming are provided in the derived classes, e.g., `sf::InputStream`, `sf::InputSoundFile`, and `sf::OutputSoundFile`.
+
+    6. sf::AudioDevice Functions:
+        - `sf::AudioDevice::getDefaultInputDevice()`: Get the default audio input device.
+        - `sf::AudioDevice::getDefaultOutputDevice()`: Get the default audio output device.
+
+    7. sf::AudioListener Functions:
+        - Functions for configuring global audio listener properties.
+
+
+    8. Keyboard
+        - `sf::Keyboard::A` to `sf::Keyboard::Z`: The letter keys 'A' to 'Z'.
+        - `sf::Keyboard::Num0` to `sf::Keyboard::Num9`: The number keys '0' to '9'.
+        - `sf::Keyboard::F1` to `sf::Keyboard::F15`: The function keys F1 to F15.
+        - `sf::Keyboard::Escape`: The Escape key.
+        - `sf::Keyboard::LControl`, `sf::Keyboard::RControl`: The left and right Control keys.
+        - `sf::Keyboard::LShift`, `sf::Keyboard::RShift`: The left and right Shift keys.
+        - `sf::Keyboard::LAlt`, `sf::Keyboard::RAlt`: The left and right Alt keys.
+        - `sf::Keyboard::LSystem`, `sf::Keyboard::RSystem`: The left and right OS-specific keys (e.g., Command on macOS, Windows key on Windows).
+        - `sf::Keyboard::Menu`: The Menu key.
+        - `sf::Keyboard::LBracket`, `sf::Keyboard::RBracket`: The left and right square brackets.
+        - `sf::Keyboard::SemiColon`: The semicolon key.
+        - `sf::Keyboard::Comma`: The comma key.
+        - `sf::Keyboard::Period`: The period key.
+        - `sf::Keyboard::Quote`: The single quote key.
+        - `sf::Keyboard::Slash`: The forward slash key.
+        - `sf::Keyboard::BackSlash`: The backslash key.
+        - `sf::Keyboard::Tilde`: The tilde key.
+        - `sf::Keyboard::Equal`: The equal sign key.
+        - `sf::Keyboard::Dash`: The hyphen (dash) key.
+        - `sf::Keyboard::Space`: The spacebar key.
+        - `sf::Keyboard::Return`: The Return (Enter) key.
+        - `sf::Keyboard::BackSpace`: The Backspace key.
+        - `sf::Keyboard::Tab`: The Tab key.
+        - `sf::Keyboard::PageUp`, `sf::Keyboard::PageDown`: The Page Up and Page Down keys.
+        - `sf::Keyboard::End`: The End key.
+        - `sf::Keyboard::Home`: The Home key.
+        - `sf::Keyboard::Insert`: The Insert key.
+        - `sf::Keyboard::Delete`: The Delete key.
+        - `sf::Keyboard::Add`, `sf::Keyboard::Subtract`, `sf::Keyboard::Multiply`, `sf::Keyboard::Divide`: The numeric keypad addition, subtraction, multiplication, and division keys.
+        - `sf::Keyboard::Left`, `sf::Keyboard::Right`, `sf::Keyboard::Up`, `sf::Keyboard::Down`: The arrow keys.
+        - `sf::Keyboard::Numpad0` to `sf::Keyboard::Numpad9`: The numeric keypad keys '0' to '9'.
+        - `sf::Keyboard::F1` to `sf::Keyboard::F15`: The function keys F1 to F15.
+        - `sf::Keyboard::Pause`: The Pause key.
+        - `sf::Keyboard::KeyCount`: The total number of keyboard keys available.
+
+        - `sf::Keyboard::isKeyPressed(sf::Keyboard::Key key)`: Check if a specific key is pressed.
+        - `sf::Keyboard::isKeyReleased(sf::Keyboard::Key key)`: Check if a specific key is released.
+    
+
+## BUFFERS
+    1. std::cout.tie(&file)    :-   print to console and also save in file
+    2. std::cout.rdbuf()       :-   change buffer to other stream
+
+
+## Move Semantics
+    1. rvalue reference 
+        - reference that binds temp objects or expressions
+        - std::move() converts lvalue to rvalue
+    2. Perfect forwarding
+        - pass arguments, preserving original lvalue or rvalue
+        - std::forward()
+        - rvalues bind to both lvalue and rvalue to perfect forward
+        - constructors in class templates, wrapper functions, generic libraries, template Metaprogramming
+        - reduce code duplication (overload for lvalue and rvalue)
+        - dangling reference
+    3. Theory
+        - lvalue reference accept only lvalue reference
+        - rvalue reference accept only rvalue reference
+        - const lvalue reference accept both lvalue and rvalue reference
+
+
+## SMART POINTERS
+    1. Unique Ptr
+        a. scoped pointer : gets deleted when goes out of scope
+        b. <memory>
+        c. get() : gets raw pointer to it
+           reset() : reset to empty
+           swap()  : swap managed resource
+           release() : return raw pointer make ptr empty
+
+    2. Shared Ptr
+        a. reference counting : gets deleted when count reaches 0
+        b. control block pointer internally
+        c. unique() : if only one resource
+           use_count() : count of reference
+
+    3. Weak Ptr
+        a. don't increase reference count
+        b. don't keep it alive
+        c. circular reference (refer each other)
+        d. lock()  : if still valid convert weak to shared and return it
+           expired() : has been deleted
+           owner_before() : compare other weak or shared to determine order
+
+    4. Theory
+        a. ownership, memory mgmt, dangling ptrs, reference counting
+        b. custom deleters, exception safety, type safety
+        c. unique -> get(), release(), reset(), swap(), get_deleter()
+        d. shared -> use_count(), owner_before(), ""
+        e. weak   -> expired(), use_count(), get(), owner_before(), lock(), reset(), swap()
+        f. Not to use -> simple, performance, type mismatch, 
+        g. reset
+            - avail for both unique and shared
+            - reset to empty or new object (optional) given as param
+           release
+            - avail for unique
+            - transfer ownership to caller
+            - no param
+
+
+## Time complexity
+    - Selection of DS depend on insert, delete, search, size of data
+    |---------------------------|---------------------------|-------------------------------|
+    | Container                 | Operation                 | Time Complexity               |
+    |---------------------------|---------------------------|-------------------------------|
+    | `std::vector`             | Access (by index)         | O(1)                          |
+    |                           | Push Back                 | Amortized O(1)                |
+    |                           | Pop Back                  | Amortized O(1)                |
+    |                           | Insert (middle)           | O(n)                          |
+    |                           | Remove (middle)           | O(n)                          |
+    |---------------------------|---------------------------|-------------------------------|
+    | `std::deque`              | Access (by index)         | O(1)                          |
+    |                           | Push Front                | O(1)                          |
+    |                           | Push Back                 | O(1)                          |
+    |                           | Pop Front                 | O(1)                          |
+    |                           | Pop Back                  | O(1)                          |
+    |                           | Insert (middle)           | O(n)                          |
+    |                           | Remove (middle)           | O(n)                          |
+    |---------------------------|---------------------------|-------------------------------|
+    | `std::list`               | Access (by position)      | O(n)                          |
+    |                           | Push Front                | O(1)                          |
+    |                           | Push Back                 | O(1)                          |
+    |                           | Insert (middle)           | O(1)                          |
+    |                           | Remove (middle)           | O(1)                          |
+    |---------------------------|---------------------------|-------------------------------|
+    | `std::multiset`,          | Search (find)             | O(log n)                      |
+    | `std::set`, `std::map`,   | Insert                    | O(log n)                      |
+    | `std::multimap`           | Remove (by key)           | O(log n)                      |
+    |---------------------------|---------------------------|-------------------------------|
+    | `std::unordered_set`,     | Search (find)             | O(1) average, O(n) worst case |
+    | `std::unordered_map`,     | Insert                    | O(1) average, O(n) worst case |
+    | `std::unordered_multiset`,| Remove (by key)           | O(1) average, O(n) worst case | 
+    | `std::unordered_multimap` |                           |                               |
+    |---------------------------|---------------------------|-------------------------------|
+    | `std::queue`              | Push                      | O(1)                          |
+    |                           | Pop                       | O(1)                          |
+    |---------------------------|---------------------------|-------------------------------|
+    | `std::priority_queue`     | Push                      | O(log n)                      |
+    |                           | Pop                       | O(log n)                      |
+    |---------------------------|---------------------------|-------------------------------|
+    | `std::stack`              | Push                      | O(1)                          |
+    |                           | Pop                       | O(1)                          |
+    |---------------------------|---------------------------|-------------------------------|
+

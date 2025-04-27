@@ -1,0 +1,26 @@
+<data>
+    <employee>
+        <EMPID>1337</EMPID>
+        <NAME>Shrinath</NAME>
+        <AGE>22</AGE>
+        <YEAR_OF_JOINING>2023</YEAR_OF_JOINING>
+    </employee>
+    <employee>
+        <EMPID>1338</EMPID>
+        <NAME>Prashant</NAME>
+        <AGE>22</AGE>
+        <YEAR_OF_JOINING>2023</YEAR_OF_JOINING>
+    </employee>
+    <employee>
+        <EMPID>1339</EMPID>
+        <NAME>Rohit</NAME>
+        <AGE>22</AGE>
+        <YEAR_OF_JOINING>2023</YEAR_OF_JOINING>
+    </employee>
+    <employee>
+        <EMPID>1335</EMPID>
+        <NAME>Navyashree</NAME>
+        <AGE>22</AGE>
+        <YEAR_OF_JOINING>2023</YEAR_OF_JOINING>
+    </employee>
+</data>

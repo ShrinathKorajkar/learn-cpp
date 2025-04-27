@@ -1,0 +1,97 @@
+# cURL (Client for URLs)
+    1. Easy Interface Functions:
+        -> void curl_global_init(long flags);
+            - initialise global resources
+            - flags can be combined using | :
+                -- CURL_GLOBAL_DEFAULT
+                -- CURL_GLOBAL_SSL      : initialise SSL library
+                -- CURL_GLOBAL_WIN32    : initialise Win32 sockets
+                -- CURL_GLOBAL_ALL              ...
+
+        -> CURL* curl_easy_init(void);
+            - initialise new cURL handle
+            - return pointer to allocated handle
+
+        -> CURLcode curl_easy_setopt(CURL* handle, CURLoption option, ...);
+            - set options for cURL handle
+            - options :
+                -- CURLOPT_URL              :  URL to connect to.
+                -- CURLOPT_WRITEFUNCTION    :  Callback function for writing received data.
+                -- CURLOPT_WRITEDATA        :  Data pointer to pass to the write callback.
+                -- CURLOPT_HEADERFUNCTION   :  Callback function for writing received headers.
+                -- CURLOPT_HEADERDATA       :  Data pointer to pass to the header callback.
+                -- CURLOPT_POST             :  Enable HTTP POST.
+                -- CURLOPT_POSTFIELDS       :  Data to send in the HTTP POST request.             ...
+
+        -> CURLcode curl_easy_perform(CURL* handle);
+            - call the api
+            - return CURLcode(int)
+                -- CURLE_OK
+                -- CURLE_UNSUPPORTED_PROTOCOL 
+                -- CURLE_COULDNT_CONNECT            ...
+
+        -> const char* curl_easy_strerror(CURLcode errornum);
+            - get human redable string describing error
+            - takes a CURLcode and returns a string
+
+        -> void curl_easy_cleanup(CURL* handle);
+            - clean and deallocated resources associated with handle
+
+        -> void curl_global_cleanup(void);
+            - clean up gloabl resources acquired by library
+
+    2. Multi Interface Functions:
+        -> CURLM* curl_multi_init(void);
+        -> CURLMcode curl_multi_add_handle(CURLM* multi_handle, CURL* easy_handle);
+        -> CURLMcode curl_multi_perform(CURLM* multi_handle, int* still_running);
+        -> CURLMcode curl_multi_cleanup(CURLM* multi_handle);
+
+    3. Form Handling Functions:
+        -> struct curl_httppost* curl_formadd(struct curl_httppost** last_post, ...);
+            - build list of http post data to be included in a request
+        -> void curl_formfree(struct curl_httppost* form);
+            - clean up the resources
+
+    4. URL Encoding/Decoding Functions:
+        -> char* curl_easy_escape(CURL* handle, const char* string, int length);
+            - replaces special characters in a URL with their respective percent-encoded representations.
+            - input string to be encoded, length of string, -1 represent string is null terminated
+            - return pointer to new string
+        -> void curl_free(void* p);
+            - frees the pointer returned by curl_easy_escape
+
+    5. DNS Resolution Functions:
+        -> struct curl_slist* curl_slist_append(struct curl_slist* list, const char* data);
+        -> void curl_slist_free_all(struct curl_slist* list);
+
+    6. File I/O Callback Functions:
+        -> size_t curl_read_callback(void* ptr, size_t size, size_t nmemb, void* userdata);
+        -> size_t curl_write_callback(void* ptr, size_t size, size_t nmemb, void* userdata);
+
+    7. Debugging Callback Function:
+        -> int curl_debug_callback(CURL* handle, curl_infotype type, char* data, size_t size, void* userdata);
+
+
+# Documentation Comments
+    1. Install - sudo apt-get update  &&  sudo apt-get install doxygen
+    2. doxygen -g                :  creates doxygen file
+    3. configure
+        - PROJECT_NAME = "My Project"
+        - INPUT = ./src
+        - OUTPUT_DIRECTORY = ./docs
+        - FILE_PATTERNS = *.cpp *.h
+        - RECURSIVE = YES                           : search for source files recusively
+        - EXCLUDE = ./src/excluded_folder
+        - EXAMPLE_PATH = ./examples
+        - GENERATE_<LATEX | HTML | MAN | XML> = NO/YES
+        - EXTRACT_ALL = YES                         : even from undocumented entities
+        - WARN_IF_UNDOCUMENTED = YES                
+        ....
+    4. doxygen Doxyfile          : run doxygen
+    5. xdg-open html/index.html  : view documentation
+    6. Doxygen 
+        - documentation generator tool used for generating documentation from annotated source code
+        - extracts info from source code comments, create documentation (html, pdf etc)
+
+
+        

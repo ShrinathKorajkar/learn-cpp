@@ -1,0 +1,4 @@
+/home/shrinathkkorajkar/Documents/Vs Code/Shri-Itt/LearnC++/cMake/build/CMakeFiles/MyLibrary.dir
+/home/shrinathkkorajkar/Documents/Vs Code/Shri-Itt/LearnC++/cMake/build/CMakeFiles/MyExecutable.dir
+/home/shrinathkkorajkar/Documents/Vs Code/Shri-Itt/LearnC++/cMake/build/CMakeFiles/edit_cache.dir
+/home/shrinathkkorajkar/Documents/Vs Code/Shri-Itt/LearnC++/cMake/build/CMakeFiles/rebuild_cache.dir

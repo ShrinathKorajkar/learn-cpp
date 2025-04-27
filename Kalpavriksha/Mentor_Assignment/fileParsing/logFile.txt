@@ -1,0 +1,9 @@
+07-06-2023 16:11:51 dut: Device State: ON
+07-06-2023 16:11:57 dut: Device State: OFF
+07-06-2023 16:11:58 dut: Device State: ERR
+07-06-2023 16:11:59 dut: Device State: ON 
+07-06-2023 16:28:54 dut: Device State: OFF
+07-06-2023 16:28:55 dut: Device State: ON
+07-06-2023 16:32:51 dut: Device State: ERR
+07-06-2023 16:32:52 dut: Device State: ON
+07-06-2023 16:33:02 dut: Device State: OFF

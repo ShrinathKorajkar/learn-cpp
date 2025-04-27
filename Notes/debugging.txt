@@ -1,0 +1,669 @@
+# GNU Debugger (GDB)
+    1. Theory
+        a. debugging tool, operates on binary files produced by compilation process, popular for unix
+        b. Help to find : 
+            - If a core dump happened, then what statement or expression did the program crash on?
+            - If an error occurs, what line of the program contains the call to that function, and what are the parameters?
+            - What are the values of program variables at a particular point during execution of the program?
+            - What is the result of a particular expression in a program?
+        c. cannot be used in compile time
+        d. uses debugging symbol table
+        e. g++ -g  :-  tells compiler to include debug info in executable
+                       this allows gdb to map back to source code
+               -O0 :-  disable optimization
+               -ggdb   enable explicitly
+               -fPIE   position independent executable
+		f. core/core-dump is file that contains snapshot of pgm mem at crash
+		g. In vs code left pannel -> run and code to use gdb
+		h. convenience variables
+
+    2. Commands
+        a. gdb pgrm
+        b. file <path>  :-  load program
+        c. run <pargs>  :-  run program
+        d. set args <>  :-  set args afer loading pgm
+        e. attach <pid> :-  attach gdb to running process  
+        f. detach
+        g. quit
+
+        h. break [file]:[lineNo]
+           break [functionName]
+           break [location] if [condition]  :-  break example.cpp:40 if x < 0 && (p y)
+           break -t [location]              :-  temporary breakpt, auto removed once hit
+           break +N                         :-  N lines down from current line
+           disable [breakptNo]
+           enable [breakptNo]
+           delete [breakptNo]
+           delete breakpoints
+
+        i. continue             :-  to continue program
+           clear                :-  deletes most recently set breakpt
+           clear N              :-  lineno, func, breakNo, 
+        j. print [variable]
+        h. bt                   :-  backtrack call stack
+		   where                :-  stack trace of core dump
+
+        i. frame [N]            :-  select specific frame from call stack
+            up / down           :-  go up one frame, go down one frame
+            info locals
+            info args
+
+        j. x                    :-  examine memory location
+            x/10x &[variable]   :-  display 10 words of mem in hex
+            x/1t                :-  binary integer
+            x/5d  [array]       :-  first five elements in array
+            x/1w  [ptr]         :-  one word of memory in pointer
+            x/s   [&string]     :-  content of string (str.c_str())
+            x/10a [&customData] :-  custom data format (10 mem loc as address)
+            x/5f  [&array]      :-  first five elemts of float array 
+            x/20x [bufferAdd]   :-  examine 20 mem loc from address
+            x/10x [dynamicptr]  :-  inspect content for dynamically alloc mem
+           
+        k. info threads
+           info registers
+           info watchpoints
+           info breakpoints     :-  info about all breakpts
+           info functions
+           info frames, source, line, macros, set, types, mem
+
+        l. [pgm] core_dump
+
+        m. valgrind [pgm]       :-  perform dynamic analysis to detect mem leaks
+           valgrind --leak-check=yes [pgm]
+           valgrind --lead-check=full
+
+        n. GProf, pref
+        o. if result > 100
+             print result
+           end
+
+        p. display [variable]   :-  display variable on every breakpoint
+           undisplay [no]
+        
+        q. catch throw          :-  break when exception is thrown
+
+        r. watch [variable]     :-  break exec when specific var change its value
+           watch [var] if [cond]
+           watch *0x1234
+           rwatch [variable]    :-  Trigger on reads
+           watch [variable]     :-  Trigger on writes (default)
+		   awatch [variable]    :-  Trigger on read / write
+           commands watchpoint_number
+                print "Variable changed!"
+                continue
+           end                  :-   commands when watchpoint triggers
+           disable watchpoint_number
+           delete watchpoint_number
+
+        s. list 10              :-  view source code to specific line (default 10)
+           list main           
+           list 20,30           :-  range of source code
+
+        t. stepi                :-  step one inst at a time
+           step N               :-  run next N lines
+           disassemble main
+           layout asm           :-  split screen
+           layout next/ prev    :-  split
+           shell clear
+
+        u. step                 :-  step into the func
+           next                 :-  execute entire function call and stays in current func
+           finish               :-  to step out and return to caller
+         
+		v. jump [lineNo]	  	:-  jump to specific line
+		   call [funcName()]
+
+		w. thread [no]          :-  switch between threads
+
+		x. handle [sigName] [no]stop [no]print / [no]pass
+		   handle SIGSEGV stop print
+		   handle SIGINT nopass
+			- specify if pgm should stop when signal receiver, should print message, should pass signal to pgm
+			- nopass will ignore the signal
+
+		   signal [sigName]     :-  send signals to pgm
+
+		y. ulimit -c unlimited  :-  enable core dump
+		   ulimit -c myapp.core :-  change core dump file name
+
+		z. set x = 43           :-  change value at runtime
+		   set $register_name = new_value
+		   set environment MY_VARIABLE=123
+		   find [startAddr],[endAddr],[value]
+		   search [value]		:-  search mem for specified value
+		   whatis [type]        :-  disp type of var or exp
+		   define               :-  define macro
+
+	3. Advance
+		a. commands <breakpoint_number>:				Define commands to be executed when a breakpoint is hit.
+		   condition <breakpoint_number> <condition>: 	Set a condition for a breakpoint.
+		   ignore <breakpoint_number> <count>			Ignore a breakpoint for a specified number of hits.	
+
+		b. edit <function>: Open the source code for a function in a text editor.
+		   cd <directory>:  Change the current working directory.
+		   ctrl + R      :- recall and modify previous commands
+		   ctrl + L      :- refresh screen
+		   ctrl + D      :- exit
+
+		5. Settings
+			a. (gdb) set print pretty on
+			b. (gdb) set pagination off
+
+		6. Custom Initialization File
+			a. # ~/.gdbinit
+				# Set custom GDB settings
+				set print pretty on
+				set pagination off
+				set style enabled on
+				alias bt mybacktrace
+			b. gdb -x /path/to/custom.gdbinit
+			c. # macro.gdb
+			   define my_macro
+			   		# Your commands here
+			   end
+			d. source macro.gdb
+			   my_macro
+
+        7. Trace command  :-  monitor execution, flow of control, function calls, values of var
+           trace [options] [pattern] [commands]
+           - options  :-  type of tracing ->  calls, follow-fork, catch, syscall, fork, vfork, exec, signals, pre-select
+           - pattern  :-  regex that specifies func, code block to trace
+           - commands :-  optionally list of cmds to execute when pattern encountered
+           trace disable [options]
+           enable tracepoints no
+           trace-clear
+
+	4. Remote
+		a. gdbserver :<port> <program>		               :-  start server
+		b. (gdb) target remote <target_machineIp>:<port>   :-  connect
+		c. (gdb) detach
+		d. (gdbserver) q
+
+	5. Reverse debugging
+		a. record  ->  record full, record btrace
+		b. reverse-step, reverse-continue, reverse-finish, stepi, nexti, -until, search .. etc
+		c. record stop, replay file.rec / .rr
+
+
+# ERROR HANDLING
+    1. Theory
+        a. Event that occurs during execution of pgm that disrupts normal flow of pgm instructions (exception)
+        b. Handle runtime errors, manage resources
+        c. assert is a macro -> cassert header
+        d. implicit conversion doesn't work in catch except classes
+        e. dynamic exception specifications are deprecated from c++11. (throw after function def)
+        f. exception of non-fundamental types must be caught using const ref to avoid copy n obj slicing
+        g. Non throwing fun by default ->  destructor, constructor, move, assign, comparison ope
+           throwing by default         ->  normal functions 
+        h. error -> issue or defect that cause abnormal behavior of program
+           exception ->  runtime error which disrupts normal flow of pgm
+        i. Use exception handling 
+            -> file I/O, nw communication, DB operations, external resource access, recovery.
+            -> boundary conditions (parsing user input or dealing with external dependencies)
+            -> using third party libraries (create wrapper around them to decrease dependencies)
+        j. use try-catch -> close to critical operation, in main control flow, encapsulate method which gives exception
+        k. try avoiding exceptions and return special case object in some cases.
+    
+    2. Classes
+        a. std::exception  :-  base for all. what() func provide description, <stdexcept>
+        b. std::logic_error     =>  can be determined at compile time
+            - invalid_argument
+            - domain_error
+            - length_error
+            - out_of_range
+        c. std::runtime_error   =>  can only be determined at runtime
+            - range_error
+            - overflow_error
+            - underflow_error
+            - system_error      =>   <system_error>
+        d. std::bad_alloc
+            - bad_array_new_length
+        e. std::bad_typeid  
+            - bad_function_call
+            - bad_cast
+                - bad_dynamic_cast
+                - bad_static_cast
+        f. std::ios_base::failure
+
+    3. Other 
+        a. custom exception ->  inherit std::exception, override what()
+        b. catch(...)       ->  catch all, elipses (even user defined)
+        c. throw expObj     ->  throws exception object
+        d. noexcept         ->  keyword specify it doesn't throw exception. also operator noexcept() -> true false
+        e. throw;           ->  throw same exception again inside catch
+        f. std::exception_ptr   ->  std::current_exception(), std::rethrow_exception()
+        g. std::set_terminate,  std::get_terminate  ->  custom termination handlers
+        h. std::set_unexpected, std::get_unexpected ->  custom unexpected handlers
+        i. std::uncaught_exception()
+        j. std::terminate()
+        k. function try block ->  Constr must throw or rethrow except (by default rethrow)
+    
+    4. Level of Exception Safety Gurantee
+        a. No-Throw
+            - code provides a no-throw gurantee. 
+            - It ensure no exception will be thrown. 
+            - Exception safe by design. 
+            - noexcept keyword
+
+        b. Basic
+            - basic gurantee. Ensures no resource leak
+            - pgm remain consistent even if exception occur
+            - destructors, smart pointers
+
+        c. Strong
+            - strong gurantee
+            - Ensures In event of exception, program state remain unchanged
+            - As if operation never attempted
+            - transition and rollback
+         
+        d. no gurantee
+
+    5. Error vs Exception
+        a. Error Handling
+            - Error is abnormal behavior. (want to avoid)
+            - Error handling involves explicitly checking for errors or invalid conditions and responding to them programmatically.
+            - It has precise control of flow.
+            - less performance overhead.
+            - predictable program behavior.
+        b. Exception Handling
+            - Exception is disrupting normal flow. (want to catch)
+            - handle expectional or unexpected situations. provide robustness.
+            - overhead of exception propogation and stack unwinding.
+            - use when normal flow cannot continue and need to propogate to higher level code.
+
+
+# TESTING
+    1. Types
+        a. Unit Testing
+            - Testing individual components of the code in isolation (smallest testable part -> func, methods, classes)
+            - early bug, regression prevention(new bugs)
+            - Arrange, Act, Assert (AAA) ->  setup, execute, verify the outcome
+            - test one thing at a time
+
+        b. Integration Testing 
+            - individual components or modules of an application are combined and tested as a group.
+            - goal is to detect address issues that arise when diff parts interact with each other
+            - top-down, bottom-up, big-bang, compo added incrementally and tested
+            - verify interface and validate data flow
+        
+        c. System Testing
+            - evaluate an entire software app as a whole
+            - functionality, reliability, performance, usability
+            - functional, non-functional, regression, compatibility, security, performance, usability, acceptance
+
+        d. Acceptance Testing
+            - ensuring software fulfills user req
+            - alpha(internal), beta(external)
+        
+        e. Functional Testing
+        f. Non-Functional Testing
+
+        g. Regression Testing
+            - Verification of existing functionality after code changes or updates.
+            - To prevent the introduction of new defects and maintain software stability.
+            - Sanity testing - areas of the software that are most likely to be impacted by recent changes.
+        
+        h. Realease Testing
+            - Final validation before a software release.
+            - Complete end-to-end testing, including deployment and rollback procedures.
+
+        i. Maintenance Testing
+            - Ongoing testing after the software is in production.
+            - To identify and address issues in a live environment.
+
+        j. Smoke Testing
+            - The name "smoke testing" is derived from the idea that if there's a major issue, such as a critical bug, 
+              it's likely to generate so much "smoke" that the software is clearly not ready for more in-depth testing.
+   
+    2. Levels
+        a. White Box
+            - also known as structural or glass box testing, focuses on the internal structure of the software. 
+            - Testers examine the source code, algorithms, and overall system architecture.
+
+        b. Black Box
+            - Black box testing focuses solely on the software's external behavior without any knowledge of its 
+              internal implementation. Testers evaluate the system's functionality based on its specifications.
+        
+        c. Gray Box
+            - Gray box testing combines elements of both white box and black box testing. Testers have partial 
+              knowledge of the internal workings of the software while assessing its external behavior.
+
+    3. Stratergies
+        a. Manual
+        b. Automated
+        c. Continous Integration
+            - Continuous Integration is a development practice where code changes are frequently integrated into 
+              a shared repository. Automated builds and tests are triggered for each integration.
+            - Well-suited for continuous integration and continuous delivery (CI/CD)
+        
+        d. Continous Testing
+            - Continuous Testing extends CI by automating the testing process throughout the development pipeline. 
+              It includes unit tests, integration tests, and other testing types.
+            - CT aims to provide quick feedback on code changes, ensuring that new code doesn't introduce regressions.
+        
+        e. Test Driven development
+            - TDD is a development approach where tests are written before writing the actual code. 
+              Developers use failing tests to drive the implementation of features.
+        
+        f. Behaviour Driven development
+            - BDD extends TDD by emphasizing collaboration between developers, testers, and domain experts. 
+              It focuses on defining behavior in a natural language format.
+
+    4. Design Techniques
+        a. Equivalence Partitioning :-  Dividing input data into groups or partitions to identify representative test cases
+        b. Boundary value analysis  :-  Testing at edges of input data partitions to uncover potential issues
+        c. Decision Table testing   :-  Creating tables that map combinations of input conditions to expected results
+        d. State transition testing :-  Focusing on testing transitions between different states of system
+        e. Use case testing         :-  Test cases based on user senarios
+        f. Positive and negative testing
+
+    5. Common Metrics and Key performance Index
+        a. Test coverage
+        b. defect density           :- no of defects / unit of code
+        c. test execution progress  :- no of test cases exe, passed, failed, remaining
+        d. test case effectiveness  :- ratio of defects found during testing / those found by users
+        e. defect aging             :- time taken to resolve defects from moment they arise
+
+    6. Defect/Bug life cycle
+        => new -> assigned -> open -> fixed -> pending retest -> retest -> verified -> closed
+        => reopened -> duplicate -> cannot reproduce -> deferred (postponed for future no high priority)
+
+    7. CI/CD -> continous integration, deployment, delivery. docker, git, infrastructure as code (terraform, ansible)
+
+    8. Common Threats
+        a. Injection attacks =>  sql, command, cross-site scripting(xss) injection
+        b. Insecure authorization, weak encryption
+        c. Open ports and services
+        d. Denial of Dervice (DoS) and Distributed DoS(DDoS)
+        e. Man in the middle (MitM)
+        f. Cross site request forgery (CSRF)
+        g. Session Hijacking
+        h. Phishing
+        i. Malware =>  virus, worms, trojans, ransomware, spyware, adware
+        j. data leaks
+
+        -  A computer virus is a type of malware that attaches itself to legitimate program files or documents. 
+           When these infected files are executed, the virus activates and replicates itself, infecting other files 
+           and potentially causing harm to the system.
+
+        -  A computer worm is a standalone malware program that can replicate and spread independently without needing
+           to attach itself to other files or programs. Worms are self-replicating and often spread rapidly across networks.
+           Worms can spread through vulnerabilities in network protocols, email attachments, or infected files. 
+           They exploit security flaws to self-propagate.
+        
+        -  A trojan is a type of malware that disguises itself as a legitimate and harmless program or file. 
+           When users download and run the trojan, it performs malicious actions without the user's knowledge.
+           They are often disguised as useful software or hidden in seemingly benign files.
+
+    9. Agile -> TDD and CI/CD
+
+    10. TDD
+        a. TDD follows a cycle: Write a failing test, write code to make it pass, and then refactor.
+        b. It emphasis writing tests before writing actual code -> robust code, rapid devp, early detect of bugs
+        c. Principles 
+            - Write failing test (unit test)
+            - Write minimal code
+            - run the test
+            - refactor -> if code passes, structure, clarity improvements
+
+
+# GTest
+    1. GTest and GMock
+        a. GTest
+            - Used for writing unit tests -> testcases, suits and assertions(expectations)
+            - check behavior of func, classes or modules
+            - write test cases for
+                -> new features and functionality added, 
+                -> test to reproduce bug and fix it.
+                -> refactored code behaves same as original
+                -> edge cases
+                -> integration points (interaction with db, nw, api)
+                -> measure performance for critical applications.
+                -> statefulness (state after and before)
+            - which all test cases
+                -> public apis
+                -> complex logic functions
+                -> error handling to ensure errors are handled properly.
+            - avoid tests for
+                -> getters/setters
+                -> auto generated code, DTO, Entities, unless contain buisness logic
+                -> third party libraries
+                -> private methods
+            - types of tests
+                -> positive, negative, edge cases, error handling, integration
+        
+        b. GMock
+            - mocking framework. used to create mock object that simulate behavior of real objs.
+            - isolate code and test dependencies
+            - Eg - mock database object that simulate db operations. and verify how code interacts
+
+        c. Theory
+            - test case registration :- google test records test cases (testCaseName, testFixture, pointerToTestFunc) in internal ds
+            - GTEST_Skip in setup() skips fixture
+            - testname and testsuit name cannot begin and end with _ followed by capital letter
+    
+    2. Install
+        a. git clone https://github.com/google/googletest.git /usr/src/googletest
+        b. cd /usr/src/googletest/googletest
+        c. sudo mkdir build
+            cd build
+            sudo cmake ..
+        d. sudo make
+        e. sudo cp libgtest.a libgtest_main.a /usr/lib
+        f. sudo rm -r /usr/src/googletest
+        g. g++ -o gtest_example gtest_example.cpp -lgtest -lgtest_main -pthread
+        h. ./output/testSuit --gtest_output=xml:test_results.xml
+        i. ./my_tests --gtest_filter=MyTestSuite.*
+        j. ./my_tests --gtest_filter=MyTestSuite.MyTest
+
+    3. gtest/gtest.h
+        a. Test Macros
+            - TEST(test_case_name, test_name)
+            - TEST_F(test_fixture, test_name)
+            - TEST_P(test_suit_name, test_name)
+        
+        b. Test Assertions
+            - ASSERT_*       =>  when fail, terminate current test
+            - EXPECT_*       =>  when fail, allow current test to continue
+            - *(val1, val2)  :-  EQ, NE, LT, GT, GE, STREQ, STRNE, STRCASEEQ, STRCASENE, FLOAT_EQ, DOUBLE_EQ
+            - *(condition)   :-  TRUE, FALSE
+            - *(pointer)     :-  NULL, NOT_NULL
+
+            - *(val1, val2, abs_err)  :-  NEAR
+            - *(stmt, execeptionType) :-  THROW
+            - *(statement)            :-  ANY_THROW, NO_THROW
+
+            - EXPECT_EXIT(statement, predicate, regex)
+            - EXPECT_DEBUG_DEATH(statement, regex)
+            - EXPECT_DEATH_IF_SUPPORTED(statement, regex)
+            
+        c. Test Fixtures
+            - class Test                :- base class for test fixtures
+            - class TestWithParam<T>
+            - SetUp()
+            - TearDown()
+        
+        d. Test discovery and registration
+            - INSTANTIATE_TEST_SUITE_P(prefix, generator, values)
+            - INSTANTIATE_TEST_SUITE_P(prefix, generator, on_val, values)  :-  Instantiates value-parameterized test cases with optional value filtering.
+            - TYPED_TEST_SUITE(test_case_name, type_list)
+            - Values(), ValuesIn()  :-  Helper functions for defining parameterized test values.
+
+        e. Test Running
+            - RUN_ALL_TESTS()
+            - RUN_ALL_TESTS_WITH_PREFIX(prefix)
+            - GTEST_ADDITIONAL_FAILURES_        :-  environ var for controlling test failure
+        
+        f. Test Exec Control
+            - GTEST_SKIP()
+            - GTEST_SKIP_REASON(reason)
+            - GTEST_SUCCEED()                   :-  explicitly marks test as success
+            - GTEST_FAIL()
+            - GTEST_FAIL_AT(file, line)
+        
+        g. Others
+            - GTEST_ASSERT_EQ(expected, actual)         :-  custom assertion for equality
+            - GTEST_MESSAGE(message)                    :-  logs message to test result 
+            - SCOPED_TRACE(message)                     :-  add message to test output
+            - TYPED_TEST(test_case_name, test_name)     :-  define typed tests, declare typed test suite
+            - TYPED_TEST_SUITE_P(test_case_name, type_list)
+            - REGISTER_TYPED_TEST_SUITE_P(test_case_name, type_list)
+
+        h. Global Test Environment
+            - class Environment                 :- base class for global test environment
+            - class EnvironmentWithParam<T>
+            - class TestEnvironment             :- default global test environment
+            - class TestSuite
+            - AddGlobalTestEnvironment()
+            - RemoveGlobalTestEnvironment()
+
+        i. Type Traits
+            - IsSame
+            - IsConvertible
+            - GetParam()         :-  retrieve current param value in param test, current type in typed param test
+            - IsSkipped()        :-  if test is marked as skip
+            - GTEST_FILTER_FLAG  :-  A flag to specify test filters when running tests.
+
+        j. Test Timeouts
+            - TEST_TIMEOUT(timeout, test_case, test_name)
+            - TEST_F_TIMEOUT(timeout, test_fixture, test_name)
+            - TestEventListener
+            - TestEventListeners
+
+        k.  << testing::PrintToString(obj)
+            friend_test() for accessing private mem
+
+    4. xUnit architecture
+        a. Test runner
+        b. test case
+        c. test fixture :- set of preconditions, state needed to run test. executed before every test
+        d. test suite   :- set of test that share common fixture. order of test shouldn't matter
+        e. test execution -> setup and teardown
+        f. test result formatter
+        g. assertions
+
+    5. Theory
+        a. Test Fixture  :-  class that serves as a shared context or environment for a group of related test cases. 
+           This class typically includes setup and teardown code that run before and after each test case within the fixture.
+
+        b. Test suit     :-  collection of related test cases, share common fixture
+
+        c. Parameterized :-  used both with and without fixtures
+
+        d. Typed Test    :-  parameterized test cases that can be instantiated with different data types or values
+
+    6. GMock
+        - To mock a class, you need to create a mock class that inherits from the class you want to mock. 
+        - In the mock class, declare mock methods with the same signatures as the original class's methods.
+        - Used for verifying expectations
+        - default cardinality is 1
+        - Return(n++) will not work as it is executed only once
+        - oncall is used inside mocked class, setup methods.
+
+    7. gmock/gmock.h
+        a. class Mock
+        b. MOCK_METHOD(return_type, method_name, (param), (modifiers));
+        c. EXPECT_CALL(mock_object, method_name(matchers)).Times(cardinality).WillOnce(action);
+        d. ON_CALL(mock_object, method_name(matchers)).WillByDefault(action);
+        e. Argument Matcher -> Matcher(argument), A<T>(), An<T>(), _
+        f. Expected Calls -> Times(cardinality), AtLeast(No), AtMost(no)
+        g. Actions -> WillOnce(action) ->  Return, ReturnAll, ReturnArg, Throw, Invoke, DoAll, WithArgs
+                      WillRepeatedly(action)
+                      WillOnce(DoAll(action1, action2)) 
+        h. Matchers -> Eq(value), Ne(v), Lt(v), Le(v), Gt(v), Ge(val), IsNull(), NotNull(), DoubleEq(3.14), StartWith(), MatchesRegex()
+        i. Custom Matcher -> MATCHER(IsEven, ""){return (arg % 2) == 0;} =>  Matcher<T> obj
+        j. InSequence obj
+           InSequenceWithParams<SequenceA, SequenceB>
+           WithStrictMock(mock_object)
+        k. NiceMock<MockClassName>,  NaggyMock<MockClassName>,  StrictMock<MockClassName>
+        l. Advance matcher ->  Pointee(matcher), Ref(matcher), TypedEq<T>(value)
+        m. Custom Actions -> Action<R(Args...)>
+        n. Saving Args -> SaveArg(arg_index, pointer_to_var), SaveArg<index>(pointer)
+        o. Delegate -> WithArg<arg_index>(action)
+        p. DoDefault()
+        q. mocking non-virtual, const, destr
+        r. MATCHER, IMPL, INTERNAL_MOCK_METHOD
+        s. ASSERT_* EXPECT_* -> THAT, 
+
+    8. gmock Usage
+        a. create mock class which derives class you want to test
+        b. create mock methods mocking real methods
+        c. create mock objects in tests
+        d. define expectations
+        e. call methods
+        f. verify interactions and tear down
+
+        g. MOCK_METHOD
+            - MOCK_METHOD(return_type, method_name, (param..), (modifiers..));
+            - MOCK_CONST_METHOD( '' );
+            - MOCK_METHOD[n](method_name, return_type(params...) modifiers); ->  n is no of params
+
+        h. ON_CALL -> can be used multiple times with diff args.
+            - WillByDefault will provide default behavior when no mathching ON_CALLm EXPECT_CALL is found
+
+        i. Argument Matchers
+            - "_" :- match any arg of appropriate type
+            - Eq(value) :- matches if arg is equal to specified value
+            - AllOf(matcher1, matcher2...) :- matches if all matchers match
+            - AnyOf(matcher1, matcher2...) :- matches if any matchers match
+            - Not(matcher)
+            - Gt(value), Lt(), Ge(), Le(), StrEq(), StrNe(), StrCaseEq()
+            - ContainerEq(container), WhenSorted(matcher)
+            - IsNull(), NotNull()
+
+        j. Expected Call Macros
+            - WillOnce(action)
+            - WillRepeatedly(a)
+            - Times(n)
+            - AtLeast(n)
+            - AtMost(n)
+            - Unordered()
+            - InSequence()
+            - DoAll(action1, action2)
+        
+        k. Actions
+            - Return(value)
+            - Invoke(func)
+            - Throw(excep)
+            - ReturnArg<n>()  :-  specifies it should return nth argument passed to it.
+            - SetArgReferee<n>(value)  :-  set value = nth arg passed to it.
+            - ReturnPointee(ptr)  :-  should return value pointed to by pointer
+            - Assign(arg, value)
+
+        l. Creating Objects of Mock classes
+            - NiceMock<MockClass> obj   :-  if you don't specify expectations for some methods GMock wont complain
+            - NaggyMock<MockClass> obj  :-  if you don't specify expectations it will give warinings
+            - StrictMock<MockClass> obj :-  if you don't specify expectations it will fail.
+            - by default it will use NiceMock  
+
+        m. Matcher
+            - MATCHER(IsEven, "is even")
+              {
+                  return (arg % 2) == 0;
+              }
+            - MATCHER(IsEven, negation ? "isn't even" : "is even")
+              {
+                  return (arg % 2) == 0;
+              }
+            - MATCHER_P(IsMultipleOf, value, string(negation ? "isn't" : "is") + " a multiple of " + PrintToString(value))
+              {
+                  auto remainder = arg % value;
+                  if( remainder ) {
+                      *result_listener << "the remainder is " << remainder;
+                  }
+                  return remainder == 0;
+              }
+ 
+
+# Security
+    a. attacks
+        1. FakeWebsited lookalike real
+        2. Links/Popups -> take to website or install malware
+        3. Apps -> free versions, games (.exe, .reg, .bat, .zip, .pdf)
+    b. Securew
+        1. Updates
+        2. Privacy settings
+        3. PopUp blockers
+        4. Hover link
+        5. Destroy confedential data before desposing
+

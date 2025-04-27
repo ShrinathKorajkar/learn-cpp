@@ -1,0 +1,7 @@
+* text=auto
+
+[attr]c-code filter=clang-format-6.0
+
+*.h c-code
+*.cpp c-code
+
